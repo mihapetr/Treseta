@@ -4,7 +4,7 @@
 
 # Ideje
 
-## JSON u bazi podataka
+## JSON u bazi podataka (prilagoditi stvarne nazive)
 * stanje igre će biti određeni objekt, npr. instanca klase `Stol` imena `stanje`
 * kako bismo izbjegli object-relational mapping problematiku kod spremanja u bazu, možemo u neku tablicu staviti atribut čiji tip podatka je JSON i spremiti: `json_encode(stanje)`
 * pitat ću profesora je li to ok, ali ne bi trebalo biti problema
@@ -24,10 +24,11 @@ create table Card {
 };
 ```
 
-* popunio sam Card tablicu u petrinjak bazi
+* popunio sam Card tablicu u *petrinjak* bazi
 
 ### Model
-* sadrži klase `Karta, Stol, Igrac, Spil` ...
+* radim na modelu
+* sadrži klase `Collection, Deck, Hand, Pile, Player, Card` ...
 
 ### View
 * JavaScript isključivo u *view* modulu smije biti
@@ -35,7 +36,7 @@ create table Card {
     * unos imena i pozicije koju korisnik želi igrati
 * game 
     * glavni engine je JavaScript s Ajax upitima serveru
-    * primjer upita
+    * primjer upita:
 
 ```
 $.ajax({
@@ -49,13 +50,17 @@ $.ajax({
     });
 ```
 
+* svi Ajax upiti idu preko *index.php* routera nekom controlleru
+
 ### Controller
 * login
     * uz pomoć baza.class stvara novog igrača sa zahtjevanom pozicijom
 * game
     * ovisno o Ajax upitu koristi *modelove* klase za obradu upita i šalje klijentu
     objektne odgovore u obliku JSON teksta
-    * long polling paradigma
-
+    * long polling paradigma (probably)
 
 # Problemi
+
+## image cash
+* cashiraju li se slike nakon inicijalnog učitavanja?
