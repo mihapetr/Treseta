@@ -14,6 +14,17 @@
 
 ### App
 * baza podataka sadrži detalje o kartama (jačina, vrijednost, ime slike)
+```
+create table Card {
+    id int primary key,     -- auto increment
+    strength tinyint(2),     -- 
+    value tinyint(1),        -- how many belas it is worth, not punats
+    suit char(1),           -- {c, d, s, b}
+    image varchar(3)        -- distinct part of image name
+};
+```
+
+* popunio sam Card tablicu u petrinjak bazi
 
 ### Model
 * sadrži klase `Karta, Stol, Igrac, Spil` ...
