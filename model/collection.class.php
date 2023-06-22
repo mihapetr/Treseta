@@ -7,7 +7,9 @@ class Collection {
 
     protected $cards;   // an ordered collection of cards, a list
 
-    function __construct() {}
+    function __construct() {
+        $this -> cards = [];
+    }
 }
 
 ?>
