@@ -1,3 +1,7 @@
+# Generalno
+* koristimo engleski za nazivlje unutar koda
+* puno komentara bi bilo lijepo
+
 # Ideje
 
 ## JSON u bazi podataka
@@ -7,6 +11,9 @@
 * kod dohvata iz baze se samo dekodira JSON u objekt tipa `Stol`
 
 ## MVC
+
+### App
+* baza podataka sadrži detalje o kartama (jačina, vrijednost, ime slike)
 
 ### Model
 * sadrži klase `Karta, Stol, Igrac, Spil` ...
