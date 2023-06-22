@@ -10,9 +10,17 @@ class Hand extends Collection {
         parent::__construct();
     }
 
+    // adds a card to the players hand
+    function add($card) {
+
+        $this -> cards[] = $card;
+    }
+
     // order cards by suit and strength descending
     function sort() {
-        
+
+        // calls a static function of class Card for comparing cards
+        usort($this -> cards, [Card::class, "cmp"]);  
     }
 
     // plays (returns) a card from a player's hand

@@ -10,6 +10,11 @@ class Collection {
     function __construct() {
         $this -> cards = [];
     }
+
+    // getter for the collection
+    function cards() {
+        return $this -> cards;
+    }
 }
 
 ?>

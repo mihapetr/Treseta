@@ -7,6 +7,22 @@ class Card {
     protected $suit;        // character from {s, c, b, d}
     protected $image;       // image file name, i.e. "c1.jpg"
 
+    // used in Hand class for sorting 
+    public static function cmp($c1, $c2) {
+
+        // if they are different suits then lex compare suits 
+        if($c1 -> suit != $c2 -> suit) {
+            return strcmp($c1 -> suit, $c2 -> suit);
+        }
+        
+        // they are the same suit
+        if($c1 -> strength < $c2 -> strength) return 1;
+
+        // there are no two cards of the same color that have the same 
+        // strength
+        return -1;
+    }
+
     function __construct($str, $suit, $val, $img) {
 
         $this -> strength = $str;

@@ -4,7 +4,7 @@ require_once __DIR__ . "/collection.class.php";
 
 // a class reprezenting cards won in the round
 
-class Hand extends Collection {
+class Pile extends Collection {
 
     // intitialize an empty collection
     function __construct() {
@@ -12,9 +12,21 @@ class Hand extends Collection {
         parent::__construct();
     }
 
-    // returns the sum of points won
+    // adds a card to the pile
+    function add($card) {
+        $this -> cards[] = $card;
+    }
+
+    // returns the sum of bela points won
     function count() {
 
+        $sum = 0;
+
+        foreach ($cards as $key => $card) {
+            $sum += $card -> val();
+        }
+
+        return $sum;
     }
 }
 
