@@ -8,7 +8,7 @@ class Table {
 
     protected static $phases;   // describes a full game cycle (every player deals cards)
 
-    protected $phase;
+    protected $phase;       // numerical representation of the phase (a key for $phases)
     protected $players;     // a list of 4 players
     protected $scores;      // turn scores
     protected $pool;        // a list of 0 - 4 cards thrown in current dealing
@@ -35,21 +35,69 @@ class Table {
     function __construct() {
 
         $this -> players = [];
-        $this -> phases = Table::getPhases();
+        $this -> scores = [];
+        $this -> phase = 0;
     }
 
     // accepts a player with desired position to the table
-    function accept($player) {
+    function acceptPlayer($player) {
 
         if(isset($this -> players[$player -> position])) 
             throw new Exception("Seat taken", 1);
         
         else $this -> players[$player -> position] = $player;
-        
+
+        if(count($this -> players) == 4) {
+            // deal cards
+        }        
     }
 
-    function end($phase) {
+    // returns the current phase
+    function phase() {
+
+        return Table::getPhases()[$this -> phase];
+    }
+
+    // returns the position of the player to play his card
+    function who() {
+
+        $phases = Table::getPhases();
+        $info = explode(",", $phases[$this -> phase]);
+        if($info[0] == "play") {
+            return $info[2];
+        }
+        else return "none";
+    }
+
+    // ends the current phase and takes care of all phases 
+    // where there is no playing cards (counting poinsts, dealing)
+    function endPhase() {
+
+        $phases = Table::getPhases();
+        $this -> phase = $this -> phase == count($phases) - 1 ? 0 : $this -> phase + 1;
+
+        $str = explode(",", $phases[$this -> phase]);
+
+        // deal cards to everyone
+        if($str[0] == "deal") {
+            
+            $this -> deal();
+            $this -> endPhase();
+        }
+
+        // count points won by each team
+        if($str[0] == "count") {
+
+            $this -> count();
+            $this -> endPhase();
+        }
+    }
+
+    private function deal() {
 
     }
 
+    private function count() {
+
+    }
 }
