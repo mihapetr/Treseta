@@ -27,6 +27,7 @@ class Hand extends Collection {
     function play($which) {
         return $this -> cards[$which];
     }
+
 }
 
 ?>

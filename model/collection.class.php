@@ -15,6 +15,11 @@ class Collection {
     function cards() {
         return $this -> cards;
     }
+
+    // empty the collection
+    function empty() {
+        $this -> cards = [];
+    }
 }
 
 ?>
