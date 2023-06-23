@@ -10,6 +10,18 @@
 * pitat ću profesora je li to ok, ali ne bi trebalo biti problema
 * kod dohvata iz baze se samo dekodira JSON u objekt tipa `Stol`
 
+## Sinkronizacija poteza igrača
+* u bazi podataka može postojati tablica :
+```
+create table Table {
+    who tinyint(1),     -- index of player to play
+    state JSON          -- encoded data from a Table object running the game
+}
+```
+* nakon što svaki od 4 klijenta napravi vezu sa serverom pomoću long-polling-a, server može u petlji svakih 10 ms provjeravati piše li u tablici Table u stupcu `who` indeks onoga koji je slao zahtjev
+* u svakom trenutku za jedan od klijenata će to vrijediti i on može tada skinuti JSON i *dekodirati* ga u Table klasu, napraviti potez, završiti fazu, encode-ati Table objekt u JSON i spremiti u bazu podataka nove podatke pomoću `$table -> save()`
+    * **problemčić** : potrebno je implementirati interpreter za JSON kod castanja u Table objekt nakon dohvata iz baze
+
 ## MVC
 
 ### App
@@ -25,6 +37,7 @@ create table Card {
 ```
 
 * popunio sam Card tablicu u *petrinjak* bazi
+* treba postojati još jedna 
 
 ### Model
 * radim na modelu
