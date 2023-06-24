@@ -64,6 +64,10 @@ $.ajax({
 ```
 
 * svi Ajax upiti idu preko *index.php* routera nekom controlleru
+* u datoteci handTest.php je osim modela ruke testiran i mogući izgled karata
+    * korišteni su zaobljeni rubovi da se ne vide ostaci zaobljenih rubova sa slika karata
+    * stavljen je 1px solid black border
+    * **treba prilagoditi mjerne jedinice tako da se prilagođavaju dimenzijama ekrana**
 
 ### Controller
 * login

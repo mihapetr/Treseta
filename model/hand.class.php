@@ -25,7 +25,10 @@ class Hand extends Collection {
 
     // plays (returns) a card from a player's hand
     function play($which) {
-        return $this -> cards[$which];
+
+        $chosen =  $this -> cards[$which];
+        unset($this -> cards[$which]);
+        return $chosen;
     }
 
 }
