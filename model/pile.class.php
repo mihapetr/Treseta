@@ -4,12 +4,19 @@ require_once __DIR__ . "/collection.class.php";
 
 // a class reprezenting cards won in the round
 
-class Pile extends Collection {
+class Pile extends Collection implements JsonSerializable {
 
     // intitialize an empty collection
     function __construct() {
 
         parent::__construct();
+    }
+
+    // encodes protected values
+    public function jsonSerialize() {
+
+        $vars = get_object_vars($this);
+        return $vars;
     }
 
     // adds a card to the pile

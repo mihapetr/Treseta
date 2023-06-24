@@ -13,9 +13,9 @@
 ## Sinkronizacija poteza igrača
 * u bazi podataka može postojati tablica :
 ```
-create table Table {
+create table State {
     who tinyint(1),     -- index of player to play
-    state JSON          -- encoded data from a Table object running the game
+    object JSON          -- encoded data from a Table object running the game
 }
 ```
 * nakon što svaki od 4 klijenta napravi vezu sa serverom pomoću long-polling-a, server može u petlji svakih 10 ms provjeravati piše li u tablici Table u stupcu `who` indeks onoga koji je slao zahtjev

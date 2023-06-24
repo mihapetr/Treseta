@@ -2,12 +2,19 @@
 
 require_once __DIR__ . "/collection.class.php";
 
-class Hand extends Collection {
+class Hand extends Collection implements JsonSerializable {
 
     // intitialize an empty collection
     function __construct() {
 
         parent::__construct();
+    }
+
+    // encodes protected values
+    public function jsonSerialize() {
+
+        $vars = get_object_vars($this);
+        return $vars;
     }
 
     // adds a card to the players hand

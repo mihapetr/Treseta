@@ -2,9 +2,11 @@
 
 require_once __DIR__ . "/player.class.php";
 require_once __DIR__ . "/pile.class.php";
+require_once __DIR__ . "/deck.class.php";
+require_once __DIR__ . "/../app/database/db.class.php";
 
 
-class Table {
+class Table implements JsonSerializable {
 
     protected static $phases;   // describes a full game cycle (every player deals cards)
 
@@ -36,20 +38,28 @@ class Table {
 
         $this -> players = [];
         $this -> scores = [];
-        $this -> phase = 0;
+        $this -> phase = -1;    // represents the seating phase
+        // if a phase is ended after all players are seated, cards will be dealt
+    }
+
+    // encodes protected values
+    public function jsonSerialize() {
+
+        $vars = get_object_vars($this);
+        return $vars;
     }
 
     // accepts a player with desired position to the table
     function acceptPlayer($player) {
 
-        if(isset($this -> players[$player -> position])) 
+        if(isset($this -> players[$player -> position()])) 
             throw new Exception("Seat taken", 1);
         
-        else $this -> players[$player -> position] = $player;
+        else $this -> players[$player -> position()] = $player;     
+    }
 
-        if(count($this -> players) == 4) {
-            // deal cards
-        }        
+    function players() {
+        return $this -> players;
     }
 
     // returns the current phase
@@ -61,6 +71,7 @@ class Table {
     // returns the position of the player to play his card
     function who() {
 
+        if($this -> phase < 0) return -1;
         $phases = Table::getPhases();
         $info = explode(",", $phases[$this -> phase]);
         if($info[0] == "play") {
@@ -81,7 +92,7 @@ class Table {
         // deal cards to everyone
         if($str[0] == "deal") {
             
-            $this -> deal();
+            $this -> deal($str[1]);
             $this -> endPhase();
         }
 
@@ -93,11 +104,80 @@ class Table {
         }
     }
 
-    private function deal() {
+    // deal everyone cards
+    private function deal($dealer) {
 
+        if(count($this -> players) != 4) throw new Exception("Not enough players", 1);
+        
+        $deck = new Deck;
+        $target = ($dealer + 1) % 4;
+        while(! $deck -> isEmpty()) {
+            for ($i=0; $i < 5; $i++) { 
+                // deal a card to the target player
+                $this -> players[$target] -> take($deck -> pop());
+            }
+            $target = ($target + 1) % 4;
+        }
     }
 
+    // save the score
+    // evens : p0, p2
+    // odds : p1, p3
     private function count() {
+
+        $evens = 0;
+        $odds = 0;
+
+        $evens += $this -> players[0] -> pile -> count();
+        $evens += $this -> players[2] -> pile -> count();
+        $odds += $this -> players[1] -> pile -> count();
+        $odds += $this -> players[3] -> pile -> count();
+
+        $this -> scores[] = [$evens, $odds];
+    }
+
+    // saves the Table object to the database;
+    // for now there is only one row with id = 1
+    function save() {
+
+        $db = DB::getConnection();
+
+        // firstly who table atribute has to be set to -1 to prevent the server
+        // from triggering the long polling condition from the same client;
+        // encoding and saving objects takes more time than tinyint
+        $db -> query("
+            update State
+            set who = -1
+            where id = 1;
+        ");
+        // now noone's request for playing turn can be handled because
+        // "who" in db has to match client position
+
+        $st = $db -> prepare("
+            update State
+            set who = :who, object = :object
+            where id = 1;
+        ");
+
+        $st -> execute(array(
+            "who" => $this -> who(),
+            "object" => json_encode($this)
+        ));
+
+        ///////////// DEBUG //////////////
+        echo json_encode($this);
+        /////////////////////////////////
+    }
+
+    // load object from database
+    function load() {
+
+        $db = DB::getConnection();
+
+        $res = $db -> query("
+            select object from State where id = 1;
+        ");
+
 
     }
 }

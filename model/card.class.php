@@ -1,6 +1,6 @@
 <?php
 
-class Card {
+class Card implements JsonSerializable {
 
     protected $strength;    // card strength
     protected $value;       // for point summation
@@ -29,6 +29,13 @@ class Card {
         $this -> value = $val;
         $this -> suit = $suit;
         $this -> image = $img;
+    }
+
+    // encodes protected values
+    public function jsonSerialize() {
+
+        $vars = get_object_vars($this);
+        return $vars;
     }
 
     // "greather than"
