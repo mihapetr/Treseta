@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.js"></script>
     <title>Hand Test</title>
     <style>
         .box {
             display  : inline-block;
-            width : 70px;
+            width : 80px;
             height : 300px;
             overflow : hidden;
         }
@@ -17,17 +18,20 @@
             position : relative;
             bottom : 10vw;
         }
+        .box:last-child {
+            width : auto;
+        }
         .card {
             border-radius : 10px;
             border : 1px solid black;
-            height : 265px;
+            height : 300px;
         }
         .card:hover {
         }
         #hand {
             text-align : center;
             position : absolute;
-            bottom : -170px;
+            bottom : -140px;
             /*border : 1px solid red;*/
             width : 98vw;
         }
@@ -65,5 +69,22 @@ foreach ($in_hand as $key => $card) {
 
 ?>
 </div>
+
+
+<script>
+
+$(document).ready(main());
+
+// this has to be called every time a card is thrown
+// the last card in hand must not be cut
+function lastCard() {
+    $(".box:last-child").css("width", "auto");
+}
+
+function main() {
+    //lastCard();
+}
+
+</script>
 </body>
 </html>
