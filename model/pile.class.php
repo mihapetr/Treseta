@@ -19,9 +19,11 @@ class Pile extends Collection implements JsonSerializable {
         return $vars;
     }
 
-    // adds a card to the pile
-    function add($card) {
-        $this -> cards[] = $card;
+    // adds cards from the list to the pile
+    function add($won) {
+        foreach ($won as $key => $card) {
+            $this -> cards[] = $card;
+        }
     }
 
     // returns the sum of bela points won

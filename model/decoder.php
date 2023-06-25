@@ -25,10 +25,8 @@ function loadJSON($Obj, $json)
 }
 ?>
 
-Tested with:
-
 <?php
-class Name
+/*class Name
 {
   public $first;
   public $last;
@@ -40,4 +38,5 @@ class Name
 $json = '{"first":"John","last":"Smith"}';
 
 $infull = loadJSON((new Name), $json);
-echo $infull->fullname();
+echo $infull->fullname();*/
+?>

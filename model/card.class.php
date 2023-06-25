@@ -40,10 +40,10 @@ class Card implements JsonSerializable {
 
     // "greather than"
     // returns TRUE if the card is stronger than the argument card
-    function gt($card) {
+    public static function gt($c1, $c2) {
 
-        if($this -> suit === $card -> suit and 
-            $this -> strength > $card -> strength) return TRUE;
+        if($c1 -> suit === $c2 -> suit and 
+            $c1 -> strength > $c2 -> strength) return TRUE;
         else return FALSE;
     }
 

@@ -6,19 +6,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hand Test</title>
     <style>
+        .box {
+            display  : inline-block;
+            width : 70px;
+            height : 300px;
+            overflow : hidden;
+        }
+        .box:hover {
+            width : auto;
+            position : relative;
+            bottom : 10vw;
+        }
         .card {
             border-radius : 10px;
             border : 1px solid black;
-            height : 260px;
+            height : 265px;
         }
         .card:hover {
-            position : relative;
-            bottom : 9vw;
         }
         #hand {
             text-align : center;
             position : absolute;
-            bottom : -120px;
+            bottom : -170px;
             /*border : 1px solid red;*/
             width : 98vw;
         }
@@ -44,8 +53,6 @@ for ($i=0; $i < 10; $i++) {
     $hand -> add($deck -> pop());
     $hand -> sort();
 }
-$hand -> play(0);
-$hand -> play(9);
 
 // retrieve all cards in hand
 $in_hand = $hand -> cards();
@@ -53,7 +60,7 @@ $in_hand = $hand -> cards();
 // display all cards
 foreach ($in_hand as $key => $card) {
     $src = "../card_art/" . $card -> img();
-    echo sprintf("<img src='%s' class='card'>", $src) ;
+    echo sprintf("<div class='box'><img src='%s' class='card'></div>", $src) ;
 }
 
 ?>
