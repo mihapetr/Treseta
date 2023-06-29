@@ -22,6 +22,12 @@ class Pool extends Collection implements JsonSerializable {
         return $vars;
     }
 
+    // setter used by loadJSON function
+    function __set($prop, $val) {
+
+        if(property_exists($this, $prop)) $this -> $prop = $val;
+    }
+
     // 
     function play($position, $card) {
 

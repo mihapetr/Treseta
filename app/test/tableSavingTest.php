@@ -14,6 +14,6 @@ $table -> save();
 echo "<hr>";
 $table2 = Table::load();
 $table2 -> endPhase();
-var_dump($table2 -> phase());
+var_dump($table2);
 
 ?>

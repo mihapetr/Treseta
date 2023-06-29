@@ -15,7 +15,7 @@ class Table implements JsonSerializable {
     protected $phase;       // numerical representation of the phase (a key for $phases)
     protected $players;     // a list of 4 players
     protected $scores;      // turn scores
-    protected $pool;        // a Pool object
+    public $pool;        // a Pool object   // ? magic setter not working
     protected $who;         // whose turn it is to play 
     protected $calls;       // bonus points: akužavanje
 
@@ -44,6 +44,7 @@ class Table implements JsonSerializable {
 
         $this -> players = [];
         $this -> scores = [];
+        $this -> pool = new Pool;
         $this -> phase = -1;    // represents the seating phase
         // if a phase is ended after all players are seated, cards will be dealt
     }
@@ -57,6 +58,7 @@ class Table implements JsonSerializable {
 
     // setter used by loadJSON function
     function __set($prop, $val) {
+
         if(property_exists($this, $prop)) $this -> $prop = $val;
     }
 
@@ -72,6 +74,11 @@ class Table implements JsonSerializable {
     // getter for players
     function players() {
         return $this -> players;
+    }
+
+    function set_player($player) {
+        
+        $this -> players[] = $player;
     }
 
     // returns the current phase
@@ -213,7 +220,7 @@ class Table implements JsonSerializable {
         ));
 
         ///////////// DEBUG //////////////
-        echo json_encode($this);
+        // echo json_encode($this);
         /////////////////////////////////
     }
 

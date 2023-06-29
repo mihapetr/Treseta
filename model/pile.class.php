@@ -19,6 +19,12 @@ class Pile extends Collection implements JsonSerializable {
         return $vars;
     }
 
+    // setter used by loadJSON function
+    function __set($prop, $val) {
+
+        if(property_exists($this, $prop)) $this -> $prop = $val;
+    }
+
     // adds cards from the list to the pile
     function add($won) {
         foreach ($won as $key => $card) {

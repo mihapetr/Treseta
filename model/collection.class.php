@@ -18,6 +18,12 @@ class Collection implements JsonSerializable {
         return $vars;
     }
 
+    // setter used by loadJSON function
+    function __set($prop, $val) {
+
+        if(property_exists($this, $prop)) $this -> $prop = $val;
+    }
+
     // getter for the collection
     function cards() {
         return $this -> cards;
@@ -33,6 +39,10 @@ class Collection implements JsonSerializable {
 
         if(count($this -> cards) == 0) return TRUE;
         else return FALSE;
+    }
+
+    function push($card) {
+        $this -> cards[] = $card;
     }
 }
 

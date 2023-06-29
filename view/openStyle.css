@@ -1,7 +1,7 @@
 .box {
     display  : inline-block;
-    width : 80px;
-    height : 300px;
+    width : 100px;
+    height : 100px;
     overflow : hidden;
 }
 .box:hover {
@@ -15,14 +15,14 @@
 .card {
     border-radius : 10px;
     border : 1px solid black;
-    height : 150px;
+    height : 5px;
 }
 .hand {
     text-align : center;
-    border : 1px solid red;
+    /*border : 1px solid red;*/
     width : 100vw;
 }
 body {
     background-color : lightgreen;
-    overflow : hidden;
+    /*overflow : hidden;*/
 }

@@ -28,6 +28,12 @@ class Player implements JsonSerializable {
         return $vars;
     }
 
+    // setter used by loadJSON function
+    function __set($prop, $val) {
+
+        if(property_exists($this, $prop)) $this -> $prop = $val;
+    }
+
     // getter for position
     function position() {
         
@@ -37,5 +43,10 @@ class Player implements JsonSerializable {
     function take($card) {
 
         $this -> hand -> add($card);
+    }
+
+    // hand getter
+    function hand() {
+        return $this -> hand;
     }
 }
