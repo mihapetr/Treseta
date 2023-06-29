@@ -3,16 +3,9 @@
 require_once __DIR__ . "/player.class.php";
 require_once __DIR__ . "/pile.class.php";
 require_once __DIR__ . "/deck.class.php";
+require_once __DIR__ . "/pool.class.php";
 require_once __DIR__ . "/../app/database/db.class.php";
 require_once __DIR__ . "/decoder.php";
-
-/*
-todo:
-* last trick points
-* call points
-* add phases where the trick is picked up
-* plays start from the dealer
-*/
 
 
 class Table implements JsonSerializable {
@@ -22,8 +15,9 @@ class Table implements JsonSerializable {
     protected $phase;       // numerical representation of the phase (a key for $phases)
     protected $players;     // a list of 4 players
     protected $scores;      // turn scores
-    protected $pool;        // a list of length 4; $pool[$i] == card thrown by $player$i
+    protected $pool;        // a Pool object
     protected $who;         // whose turn it is to play 
+    protected $calls;       // bonus points: akužavanje
 
     public static function getPhases() {
 
@@ -35,6 +29,7 @@ class Table implements JsonSerializable {
             $ph[] = "deal," . $i;
             for ($j=0; $j < 10; $j++) { 
                 for ($k=0; $k < 4; $k++) { 
+                    if($j == 0) $ph[] = "call";     // akužavanje
                     $ph[] = "play," . $j . "," . $k;    // play, trick, card
                 }
                 $ph[] = "collect";
@@ -60,6 +55,11 @@ class Table implements JsonSerializable {
         return $vars;
     }
 
+    // setter used by loadJSON function
+    function __set($prop, $val) {
+        if(property_exists($this, $prop)) $this -> $prop = $val;
+    }
+
     // accepts a player with desired position to the table
     function acceptPlayer($player) {
 
@@ -69,6 +69,7 @@ class Table implements JsonSerializable {
         else $this -> players[$player -> position()] = $player;     
     }
 
+    // getter for players
     function players() {
         return $this -> players;
     }
@@ -79,26 +80,29 @@ class Table implements JsonSerializable {
         return Table::getPhases()[$this -> phase];
     }
 
-    // returns the position of the player who won the trick
-    function trickWinner() {
-
-        if(count($this -> pool) != 4) throw new Exception("Not enough cards in the pool", 1);
-        
-        $winner = ($who + 1) % 4; // the player who was first to throw
-        for ($i=1; $i <= 3; $i++) {
-            $contestor =  ($winner + $i) % 4;
-            $winnerCard = $this -> pool[$winner];
-            $contestorCard = $this -> pool[$contestor];
-            if(Card::gt($contestorCard, $winnerCard)) $winner = $contestor;
-        }
-
-        return $winner;
-    }
-
     // returns the position of the player to play his card
     function who() {
 
         return $this -> who;
+    }
+
+    // check if cards can be called, and call
+    // args: player index and list of card indexes
+    function isLegalCall($playerI, $cardsI) {
+
+        $player = $this -> players[$playerI];
+        $called = [];
+        $hand = $player -> hand -> cards;
+        foreach ($cardsI as $key) {
+            $called[] = $hand[$key];
+        }
+
+        $value = Deck::call($called);
+        if ($value == 0) return FALSE;
+        else {
+            $this -> calls[$playerI] = $value;
+            return TRUE;
+        }
     }
 
     // ends the current phase and takes care of all phases 
@@ -110,6 +114,7 @@ class Table implements JsonSerializable {
 
         $str = explode(",", $phases[$this -> phase]);
 
+        // in the middle of the trick
         if($str[0] == "play" and $str[2] != 0) {
 
             $this -> who = ($this -> who + 1) % 4;
@@ -119,16 +124,15 @@ class Table implements JsonSerializable {
         if($str[0] == "deal") {
             
             $this -> deal($str[1]);
-            $this -> who = $str[1];
+            $this -> who = (intval($str[1]) + 1) % 4;   // player to the "left"
             $this -> endPhase();
         }
 
         // collect the trick
         if($str[0] == "collect") {
 
-            $winner = $this -> trickWinner();
-            $this -> players[$winner] -> pile -> add($this -> pool);
-            $this -> pool = [];
+            $winner = $this -> pool -> winner();
+            $this -> players[$winner] -> pile -> add($this -> pool -> collect());
             $this -> who = $winner;
             $this -> endPhase();
         }
@@ -172,6 +176,11 @@ class Table implements JsonSerializable {
 
         $evens = intdiv($evens, 3);
         $odds = intdiv($odds, 3);
+
+        // $who property holds info about the winner of the last trick
+        if($this -> who % 2 == 0) $evens += 1;
+        else $odds += 1;
+
         $this -> scores[] = [$evens, $odds];
     }
 
@@ -209,7 +218,7 @@ class Table implements JsonSerializable {
     }
 
     // load object from database
-    function load() {
+    public static function load() {
 
         $db = DB::getConnection();
 
@@ -220,6 +229,8 @@ class Table implements JsonSerializable {
         $json = $res -> fetchAll()[0]["object"];
         
         // use loadJSON
-        // create magical setters for properties
+        $table = loadJson((new Table), $json);
+
+        return $table;
     }
 }

@@ -1,0 +1,28 @@
+.box {
+    display  : inline-block;
+    width : 80px;
+    height : 300px;
+    overflow : hidden;
+}
+.box:hover {
+    width : auto;
+    position : relative;
+    bottom : 10vw;
+}
+.box:last-child {
+    width : auto;
+}
+.card {
+    border-radius : 10px;
+    border : 1px solid black;
+    height : 150px;
+}
+.hand {
+    text-align : center;
+    border : 1px solid red;
+    width : 100vw;
+}
+body {
+    background-color : lightgreen;
+    overflow : hidden;
+}

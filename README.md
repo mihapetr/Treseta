@@ -2,7 +2,24 @@
 * koristimo engleski za nazivlje unutar koda
 * puno komentara bi bilo lijepo
 
+## Pravila
+* prati se boja
+* zove se samo prvi krug nakon dijeljenja prije bacanja karte
+* *strišo* i *tučem* samo onaj tko je prvi na redu u štihu
+* **zvanje** : 
+    * as, 2, 3 = 3 punta
+    * as x 3, as x 4 = 3, 4 punta
+    * 1 x 3, 1 x 4 = 3, 4 punta
+    * 2 x 3, 2 x 4 = 3, 4 punta
+
+## Open Game
+* u view modul sam ubacio datoteke za testiranje klase `Table` pomoću otvorene igre na jednom klijentu
+* sve počinju imenom *open*
+
 # Ideje
+
+## class Table
+* igrači moraju u view modulu biti poredani tako da se pozicije povečavaju u smjeru kazaljke na satu
 
 ## JSON u bazi podataka (prilagoditi stvarne nazive)
 * stanje igre će biti određeni objekt, npr. instanca klase `Stol` imena `stanje`

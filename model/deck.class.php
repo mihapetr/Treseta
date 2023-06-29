@@ -39,6 +39,45 @@ class Deck extends Collection {
         return Deck::$allCards;
     }
 
+    // REVIEW
+    // returns the value of the calling cards
+    public static function call($cards) {
+
+        $count = count($cards);
+        if($count < 3 or $count > 4) return 0;
+        // 1,1,1,1 / 2,2,2,2 / 3,3,3,3 ?
+        if($count == 4) {
+            $label = $cards[0] -> image[1];
+            if(!in_array($label, ["1","2","3"])) return 0;
+            foreach ($cards as $key => $card) {
+                if($card -> image[1] != $label) return 0;
+            }
+            return 4;
+        }
+        else if($count == 3) {
+            if($cards[0]->suit == $cards[1]->suit and $cards[1]->suit == $cards[2]->suit) {
+                // 1,2,3 ?
+                usort($cards, [Card::class, "cmp"]);
+                if(
+                    $cards[0]->image[1] != "1" or
+                    $cards[1]->image[1] != "2" or
+                    $cards[2]->image[1] != "3"
+                ) return 0;
+                else return 3;
+            }
+            else {
+                // 1,1,1 / 2,2,2 / 3,3,3 ?
+                $label = $cards[0] -> image[1];
+                if(!in_array($label, ["1","2","3"])) return 0;
+                foreach ($cards as $key => $card) {
+                    if($card -> image[1] != $label) return 0;
+                }
+                return 3;
+            }
+        }
+
+    }
+
     // randomize the order of cards in the $cards list
     function shuffle() {
         shuffle($this -> cards);

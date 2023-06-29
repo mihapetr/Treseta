@@ -64,7 +64,7 @@ $in_hand = $hand -> cards();
 // display all cards
 foreach ($in_hand as $key => $card) {
     $src = "../card_art/" . $card -> img();
-    echo sprintf("<div class='box'><img src='%s' class='card'></div>", $src) ;
+    echo sprintf("<div class='box'><img src='%s' class='card'></div>", $src);
 }
 
 ?>

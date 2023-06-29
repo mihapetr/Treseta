@@ -11,10 +11,9 @@ $table -> acceptPlayer(new Player("Marko", 3));
 $table -> endPhase();
 
 $table -> save();
-
-$table = Table::load();
-vardump($table -> players());
-
-$table -> save();
+echo "<hr>";
+$table2 = Table::load();
+$table2 -> endPhase();
+var_dump($table2 -> phase());
 
 ?>
