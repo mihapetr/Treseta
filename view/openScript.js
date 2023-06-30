@@ -18,20 +18,3 @@ function show(hands) {
         $("#h" + i).html(hands[i]);        
     }
 }
-
-$(document).ready(main());
-
-function main() {
-
-    $.ajax({
-        url : "index.php?rt=open/start",
-        data : {
-            
-        },
-        method : "POST",
-        dataType : "html",  
-        success : null   
-    });
-
-    update_hands();
-}

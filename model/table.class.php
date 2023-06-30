@@ -164,8 +164,10 @@ class Table implements JsonSerializable {
                 // deal a card to the target player
                 $this -> players[$target] -> take($deck -> pop());
             }
+            $this -> players[$target] -> hand() -> sort();
             $target = ($target + 1) % 4;
         }
+
     }
 
     // save the score

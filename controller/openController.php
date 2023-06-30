@@ -5,7 +5,7 @@ require_once __DIR__ . "/../model/table.class.php";
 class OpenController {
 
     // initializes the Table object and saves it to DB
-    function start() {
+    function index() {
 
         $table = new Table;
         // this part should be done by each client when they 
@@ -22,24 +22,17 @@ class OpenController {
         echo "started";
     }
 
-    // returns html representation of cards each player has in their hand
+    // returns card images each player has in their hand
     function getHands() {
 
         $table = Table::load();
         $hands = [];
-        $src = null;
         foreach ($table -> players() as $key => $player) {
-            $hand = $player -> hand() -> cards();
-            $str = "";
-            foreach ($hand as $key => $card) {
-                $src = "../app/card_art/" . $card -> img();     // prilagoditi za index
-                $str .= sprintf(
-                    "<div class='box'>
-                        <img src='%s' class='card'>
-                    </div>"
-                , $src);
+            $images = [];
+            foreach ($player -> hand() -> cards() as $key => $card) {
+                $images[] = $card -> img();
             }
-            $hands[] = $str;
+            $hands[] = $images;
         }
 
         echo json_encode($hands);
