@@ -58,8 +58,10 @@ class OpenController {
         $table -> played($player, $card);
         $table -> endPhase();
         $table -> save();
-        $msg = sprintf("phase: %s, player: %s", $table -> phase(), $table -> who());
-        echo json_encode(new Message($table -> pool, $msg));
+        $msg = $player . $card;
+        if($table -> pool -> isEmpty()) $msg .= "c";
+        $log = sprintf("phase: %s, player: %s", $table -> phase(), $table -> who());
+        echo json_encode(new Message($log, $msg));
     }
 
     // akužavanje

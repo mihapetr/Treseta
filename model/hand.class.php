@@ -40,7 +40,7 @@ class Hand extends Collection implements JsonSerializable {
     function throw($which) {
 
         $chosen =  $this -> cards[$which];
-        unset($this -> cards[$which]);
+        $this -> cards[$which] = new Card("","","","");
         return $chosen;
     }
 

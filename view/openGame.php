@@ -62,13 +62,13 @@ td {
     P3<div id="h3" class="hand"></div>
     <table id="pool">
     <tr>
-        <td></td> <td id="c2"></td> <td></td>
+        <td></td> <td id="t2">P2</td> <td></td>
     </tr>
     <tr>
-        <td id="c1"></td> <td></td> <td id="c3"></td>
+        <td id="t1">P1</td> <td></td> <td id="t3">P3</td>
     </tr>
     <tr>
-        <td></td> <td id="c0"></td> <td></td>
+        <td></td> <td id="t0">P0</td> <td></td>
     </tr>
     </table>
     <button id="c0" class="call">call_0</button>
@@ -139,18 +139,29 @@ function clickable() {
             method : "POST",
             dataType : "json",  
             // on success take the card from the player
-            success : take_card,
-            // on error notify the player that it is an illegal move
+            success : place_card,
+            // on error notify the player that it is an illegal move (not done)
             error : warn
         });
     });
 }
 
 // update what the player just did
-function take_card(resp) {
+function place_card(resp) {
 
     console.log(resp.object);
     console.log(resp.msg);
+    // get and remove the box that was clicked
+    let box = $(`#${resp.msg[0]}${resp.msg[1]}`);
+    box.remove();
+    // place the card on the table
+    $(`#t${resp.msg[0]}`).html("").append(box);
+    // if the server said "c" cards from the pool were collected
+    if(resp.msg[2] == "c") {
+        setTimeout(() => {
+            $("td").html(``);
+        }, 1500);       // time that passes before cards are not displayed any more
+    }
 }
 
 // upgrade to warn the player about the rules

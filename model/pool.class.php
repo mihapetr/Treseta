@@ -31,7 +31,7 @@ class Pool extends Collection implements JsonSerializable {
         if(property_exists($this, $prop)) $this -> $prop = $val;
     }
 
-    // 
+    // player on $position plays a card with index $card
     function play($position, $card) {
 
         //if(isset($this -> cards[$position])) throw new Exception("Card already on the table!", 1);
@@ -73,10 +73,19 @@ class Pool extends Collection implements JsonSerializable {
         }
     }
 
+    // empties the pool
     function collect() {
 
         $cards = $this -> cards;
-        $this -> cards = [];
+        $this -> first = null;
+        $this -> cards = array_fill(0, 4, new Card("","","",""));
+        $this -> empty = true;  // if all cards on the table are empty cards
         return $cards;
+    }
+
+    function isEmpty() {
+        
+        if ($this -> empty) return true;
+        return false;
     }
 }
