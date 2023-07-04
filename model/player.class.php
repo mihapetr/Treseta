@@ -40,6 +40,7 @@ class Player implements JsonSerializable {
         return $this -> position;
     }
 
+    // for dealing cards
     function take($card) {
 
         $this -> hand -> add($card);
@@ -47,6 +48,23 @@ class Player implements JsonSerializable {
 
     // hand getter
     function hand() {
+
         return $this -> hand;
+    }
+
+    function pile() {
+
+        return $this -> pile;
+    }
+
+    function name() {
+
+        return $this -> name;
+    }
+
+    // for playing a card
+    function play($which) {
+
+        return $this -> hand -> throw($which);
     }
 }

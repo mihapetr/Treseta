@@ -22,7 +22,7 @@ function obj($key) {
             return new Pool();
             break;
         default:
-            //
+            throw new Exception("Default class?", 1);
             break;
     }
 }
@@ -35,15 +35,7 @@ function loadJSON($Obj, $json)
     {
         if(property_exists ( $Obj ,  $key ))
         {
-            if(is_object($dcod->$key))
-            {
-                // get object class and make a new one
-                $loaded = obj($key);
-                //echo "loading prop: " . $key . "<br>";
-                loadJSON($loaded, json_encode($dcod->$key));
-                $Obj -> $key = $loaded;
-            }
-            elseif($key == "players") {
+            if($key == "players") {
                 $Obj -> players = [];
                 foreach ($dcod -> $key as $key => $player) {
                     $loadedPlayer = new Player("", -1);
@@ -58,6 +50,14 @@ function loadJSON($Obj, $json)
                     loadJson($loadedCard, json_encode($card));
                     $Obj -> push($loadedCard);
                 }
+            }
+            elseif(is_object($dcod->$key))
+            {
+                // get object class and make a new one
+                $loaded = obj($key);
+                //echo "loading prop: " . $key . "<br>";
+                loadJSON($loaded, json_encode($dcod->$key));
+                $Obj -> $key = $loaded;
             }
             else
             {

@@ -29,7 +29,7 @@ class Table implements JsonSerializable {
             $ph[] = "deal," . $i;
             for ($j=0; $j < 10; $j++) { 
                 for ($k=0; $k < 4; $k++) { 
-                    if($j == 0) $ph[] = "call";     // akužavanje
+                    if($j == 0) $ph[] = "call," . $k;     // akužavanje
                     $ph[] = "play," . $j . "," . $k;    // play, trick, card
                 }
                 $ph[] = "collect";
@@ -44,7 +44,7 @@ class Table implements JsonSerializable {
 
         $this -> players = [];
         $this -> scores = [];
-        $this -> pool = new Pool;
+        $this -> pool = new Pool();
         $this -> phase = -1;    // represents the seating phase
         // if a phase is ended after all players are seated, cards will be dealt
     }
@@ -112,6 +112,14 @@ class Table implements JsonSerializable {
         }
     }
 
+    // playing a card
+    function played($who, $which) {
+
+        $player = $this -> players[$who];
+        $card = $player -> play($which);
+        $this -> pool -> play($who, $card);
+    }
+
     // ends the current phase and takes care of all phases 
     // where there is no playing cards (counting poinsts, dealing)
     function endPhase() {
@@ -120,6 +128,19 @@ class Table implements JsonSerializable {
         $this -> phase = $this -> phase == count($phases) - 1 ? 0 : $this -> phase + 1;
 
         $str = explode(",", $phases[$this -> phase]);
+
+        // only the first player who calls is not after someone
+        if($str[0] == "call" and $str[1] != 0) {
+
+            $this -> who = ($this -> who + 1) % 4;
+            return;
+        }
+
+        if($str[0] == "play" and $str[1] == 0) {
+
+            // nothing, the player is already on turn (calling in the first trick)
+            return;
+        }
 
         // in the middle of the trick
         if($str[0] == "play" and $str[2] != 0) {
@@ -139,7 +160,7 @@ class Table implements JsonSerializable {
         if($str[0] == "collect") {
 
             $winner = $this -> pool -> winner();
-            $this -> players[$winner] -> pile -> add($this -> pool -> collect());
+            $this -> players[$winner] -> pile() -> add($this -> pool -> collect());
             $this -> who = $winner;
             $this -> endPhase();
         }

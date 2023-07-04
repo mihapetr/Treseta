@@ -37,7 +37,7 @@ class Hand extends Collection implements JsonSerializable {
     }
 
     // plays (returns) a card from a player's hand
-    function play($which) {
+    function throw($which) {
 
         $chosen =  $this -> cards[$which];
         unset($this -> cards[$which]);

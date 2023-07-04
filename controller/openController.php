@@ -2,6 +2,16 @@
 
 require_once __DIR__ . "/../model/table.class.php";
 
+// sending messages to the client (debugging)
+class Message {
+    public $object;
+    public $msg;
+    function __construct($o, $m) {
+        $this -> object = $o;
+        $this -> msg = $m;
+    }
+}
+
 class OpenController {
 
     // initializes the Table object and saves it to DB
@@ -19,7 +29,8 @@ class OpenController {
         // save the game state
         $table -> save();
 
-        echo "started";
+        $msg = sprintf("started game, phase: %s, player: %s", $table -> phase(), $table -> who());
+        echo json_encode(new Message(null, $msg));
     }
 
     // returns card images each player has in their hand
@@ -36,6 +47,30 @@ class OpenController {
         }
 
         echo json_encode($hands);
+    }
+
+    // when a player plays a card
+    function play() {
+
+        $table = Table::load();
+        $player = $_POST["played"][0];  // first char in card box id
+        $card = $_POST["played"][1];    // second char in card box id
+        $table -> played($player, $card);
+        $table -> endPhase();
+        $table -> save();
+        $msg = sprintf("phase: %s, player: %s", $table -> phase(), $table -> who());
+        echo json_encode(new Message($table -> pool, $msg));
+    }
+
+    // akužavanje
+    function call() {
+
+        $table = Table::load();
+        // todo
+        $table -> endPhase();
+        $table -> save();
+        $msg = sprintf("phase: %s, player: %s", $table -> phase(), $table -> who());
+        echo json_encode(new Message($table -> pool, $msg));
     }
 }
 

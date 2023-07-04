@@ -7,12 +7,15 @@ require_once __DIR__ . "/collection.class.php";
 class Pool extends Collection implements JsonSerializable {
 
     protected $first;       // position of the first card (player)
+    protected $empty;
 
     // intitialize an empty collection
     function __construct() {
 
         parent::__construct();
         $this -> first = null;
+        $this -> cards = array_fill(0, 4, new Card("","","",""));
+        $this -> empty = true;  // if all cards on the table are empty cards
     }
 
     // encodes protected values
@@ -31,16 +34,19 @@ class Pool extends Collection implements JsonSerializable {
     // 
     function play($position, $card) {
 
-        if(isset($this -> cards[$position])) throw new Exception("Card already on the table!", 1);
+        //if(isset($this -> cards[$position])) throw new Exception("Card already on the table!", 1);
         
-        if(count($this -> cards) == 0) $this -> first = $position;
+        if($this -> empty) {
+            $this -> first = $position;
+            $this -> empty = false;
+        }
         $this -> cards[$position] = $card;
     }
 
     // returns the position of the player who won the trick
     function winner() {
 
-        if(count($this -> pool) != 4) throw new Exception("Not enough cards in the pool", 1);
+        //if(count($this -> cards) != 4) throw new Exception("Not enough cards in the pool", 1);
         
         $winner = $this -> first;
         for ($i=1; $i <= 3; $i++) {
@@ -71,5 +77,6 @@ class Pool extends Collection implements JsonSerializable {
 
         $cards = $this -> cards;
         $this -> cards = [];
+        return $cards;
     }
 }

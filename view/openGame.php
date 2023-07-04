@@ -71,37 +71,45 @@ td {
         <td></td> <td id="c0"></td> <td></td>
     </tr>
     </table>
+    <button id="c0" class="call">call_0</button>
+    <button id="c1" class="call">call_1</button>
+    <button id="c2" class="call">call_2</button>
+    <button id="c3" class="call">call_3</button>
 </div>
 
 <script>
 
+// call for controller to initialize the game
 function start() {
 
-$.ajax({
-    url : "index.php?rt=open/index",
-    data : {},
-    method : "POST",
-    dataType : "json",  
-    success : null  
-});
+    $.ajax({
+        url : "index.php?rt=open/index",
+        data : {},
+        method : "POST",
+        dataType : "json",  
+        success : function(resp) {
+            console.log(resp.msg);
+            update_hands();
+        }  
+    });
 }
 
 // update the state of every player's hands
 function update_hands() {
 
-$.ajax({
-    url : "index.php?rt=open/getHands",
-    data : {
-        
-    },
-    method : "POST",
-    dataType : "json",  
-    success : show   
-});
+    $.ajax({
+        url : "index.php?rt=open/getHands",
+        data : {},
+        method : "POST",
+        dataType : "json",  
+        success : show   
+    });
 }
 
+// display every hand
 function show(hands) {
 
+    //console.log(hands);
     let src = null;
     let box = null;
     for (let i = 0; i < hands.length; i++) {
@@ -115,10 +123,57 @@ function show(hands) {
     }
 }
 
+// make cards clickable
 function clickable() {
 
     $(".hand").on("click", ".box", function() {
         console.log(`clicked: ${this.id}`);
+        // playing of a card should be reflected in the game state
+        // todo: add a turn condition
+        // todo: add a legal condition
+        $.ajax({
+            url : "index.php?rt=open/play",
+            data : {
+                played : this.id
+            },
+            method : "POST",
+            dataType : "json",  
+            // on success take the card from the player
+            success : take_card,
+            // on error notify the player that it is an illegal move
+            error : warn
+        });
+    });
+}
+
+// update what the player just did
+function take_card(resp) {
+
+    console.log(resp.object);
+    console.log(resp.msg);
+}
+
+// upgrade to warn the player about the rules
+function warn(xhr, status, error) {
+
+    console.log(xhr);
+    console.log(status);
+    console.log(error);
+}
+
+// buttons for calling the "akužavanje"
+function callable() {
+
+    $(".call").on("click", function(){
+        $.ajax({
+            url : "index.php?rt=open/call",
+            data : {},  // pass the cards
+            method : "POST",
+            dataType : "json",  
+            success : function(resp) {
+                console.log(resp.msg);
+            }  
+        });
     });
 }
 
@@ -127,9 +182,8 @@ $(document).ready(main());
 function main() {
 
     start();
-    console.log("initialized game");
-    update_hands();
     clickable();
+    callable();
 }
 
 </script>
