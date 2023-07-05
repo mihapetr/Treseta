@@ -62,11 +62,13 @@ class Pool extends Collection implements JsonSerializable {
     // check if it is legal for a $player to throw a $card
     function isLegal($player, $card) {
 
+        if($this -> empty) return true;     // any card can be first
+
         $suit = $this -> cards[$this -> first] -> suit;     // pool suit
         if($card -> suit == $suit) return TRUE;
         else {
-            $hand = $player -> hand;
-            foreach ($hand as $key => $card) {
+            $handCards = $player -> hand() -> cards();
+            foreach ($handCards as $key => $card) {
                 if($card -> suit == $suit) return FALSE; // suit has to be followed
             }
             return TRUE; // there is no card of the pool suit

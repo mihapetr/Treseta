@@ -199,10 +199,10 @@ class Table implements JsonSerializable {
         $evens = 0;
         $odds = 0;
 
-        $evens += $this -> players[0] -> pile -> count();
-        $evens += $this -> players[2] -> pile -> count();
-        $odds += $this -> players[1] -> pile -> count();
-        $odds += $this -> players[3] -> pile -> count();
+        $evens += $this -> players[0] -> pile() -> count();
+        $evens += $this -> players[2] -> pile() -> count();
+        $odds += $this -> players[1] -> pile() -> count();
+        $odds += $this -> players[3] -> pile() -> count();
 
         $evens = intdiv($evens, 3);
         $odds = intdiv($odds, 3);

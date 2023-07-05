@@ -2,6 +2,13 @@
 * koristimo engleski za nazivlje unutar koda
 * puno komentara bi bilo lijepo
 
+# Briefing
+
+* modifikacija openGame.php u client verzije
+    * demonstrirane funkcionalnosti modela pomoću otvorene igre (pokaži)
+* treba napraviti ulogiravanje/prijavu igrača
+* treba napraviti prezentaciju : što ide u nju?
+
 ## Pravila
 * prati se boja
 * zove se samo prvi krug nakon dijeljenja prije bacanja karte

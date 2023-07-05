@@ -35,6 +35,7 @@
     width : 60vw;
     height : 120px;
     overflow : hidden;
+    display: inline-block;
 }
 body {
     background-color : lightgreen;
@@ -56,10 +57,10 @@ td {
 <body>
     
 <div id="main">
-    P0<div id="h0" class="hand"></div>
-    P1<div id="h1" class="hand"></div>
-    P2<div id="h2" class="hand"></div>
-    P3<div id="h3" class="hand"></div>
+    P0:<div id="h0" class="hand"></div><button id="c0" class="call">call_0</button><br><br>
+    P1:<div id="h1" class="hand"></div><button id="c1" class="call">call_1</button><br><br>
+    P2:<div id="h2" class="hand"></div><button id="c2" class="call">call_2</button><br><br>
+    P3:<div id="h3" class="hand"></div><button id="c3" class="call">call_3</button><br><br>
     <table id="pool">
     <tr>
         <td></td> <td id="t2">P2</td> <td></td>
@@ -71,10 +72,15 @@ td {
         <td></td> <td id="t0">P0</td> <td></td>
     </tr>
     </table>
-    <button id="c0" class="call">call_0</button>
-    <button id="c1" class="call">call_1</button>
-    <button id="c2" class="call">call_2</button>
-    <button id="c3" class="call">call_3</button>
+    <br>
+    
+    <hr>
+    piles:<br>
+    P0:<div id="p0" class="pile"></div><br><br>
+    P1:<div id="p1" class="pile"></div><br><br>
+    P2:<div id="p2" class="pile"></div><br><br>
+    P3:<div id="p3" class="pile"></div><br><br>
+    
 </div>
 
 <script>
@@ -90,11 +96,15 @@ function start() {
         success : function(resp) {
             console.log(resp.msg);
             update_hands();
+            for(let i=0; i<4; i++) {
+                disable_hand(i);    // disable all hands
+                wait_turn(i);   // i-th player asks the server to be notified about their turn
+            }
         }  
     });
 }
 
-// update the state of every player's hands
+// fetch the state of every player's hands (initial state)
 function update_hands() {
 
     $.ajax({
@@ -139,18 +149,30 @@ function clickable() {
             method : "POST",
             dataType : "json",  
             // on success take the card from the player
-            success : place_card,
-            // on error notify the player that it is an illegal move (not done)
-            error : warn
+            success : function(resp) {
+                if(resp.msg == "illegal") {
+                    warning();
+                    return;
+                }
+                place_card(resp);
+            }
         });
     });
 }
 
-// update what the player just did
+// in case it is an illegal move
+function warning() {
+
+    alert("Illegal move!");
+}
+
+// update what the player just played
 function place_card(resp) {
 
-    console.log(resp.object);
-    console.log(resp.msg);
+    let player = resp.msg[0];
+    // if the request was legal, disable the players hand
+    disable_hand(player);
+
     // get and remove the box that was clicked
     let box = $(`#${resp.msg[0]}${resp.msg[1]}`);
     box.remove();
@@ -162,14 +184,8 @@ function place_card(resp) {
             $("td").html(``);
         }, 1500);       // time that passes before cards are not displayed any more
     }
-}
 
-// upgrade to warn the player about the rules
-function warn(xhr, status, error) {
-
-    console.log(xhr);
-    console.log(status);
-    console.log(error);
+    wait_turn(player);
 }
 
 // buttons for calling the "akužavanje"
@@ -188,13 +204,40 @@ function callable() {
     });
 }
 
+// long polling
+function wait_turn(i) {
+
+    $.ajax({
+        url : "index.php?rt=open/await",
+        data : {
+            player : i
+        },
+        method : "POST",
+        dataType : "json",  
+        success : function(resp) {
+            console.log(`enabled hand ${i}`);
+            enable_hand(i);
+        }  
+    });
+}
+
+function enable_hand(i) {
+    $(`#h${i}`).show();
+    $(`#c${i}`).show();
+}
+
+function disable_hand(i) {
+    $(`#h${i}`).hide();
+    $(`#c${i}`).hide();
+}
+
 $(document).ready(main());
 
 function main() {
 
-    start();
-    clickable();
-    callable();
+    start();    // create an new table in the database
+    clickable();    // make cards clickable
+    callable();     // button for akužavanje (for now just skips turn)
 }
 
 </script>

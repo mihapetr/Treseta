@@ -44,6 +44,12 @@ class Hand extends Collection implements JsonSerializable {
         return $chosen;
     }
 
+    // card getter
+    function card($i) {
+        
+        return $this -> cards[$i];
+    }
+
 }
 
 ?>

@@ -55,6 +55,15 @@ class OpenController {
         $table = Table::load();
         $player = $_POST["played"][0];  // first char in card box id
         $card = $_POST["played"][1];    // second char in card box id
+
+        // check if it is a legal move
+        $physicalCard = $table -> players()[$player] -> hand() -> card($card);
+        $physicalPlayer = $table -> players()[$player];
+        if(! $table -> pool -> isLegal($physicalPlayer, $physicalCard)) {
+            echo json_encode(new Message(null, "illegal"));
+            exit(1);      
+        }
+
         $table -> played($player, $card);
         $table -> endPhase();
         $table -> save();
@@ -74,6 +83,29 @@ class OpenController {
         $msg = sprintf("phase: %s, player: %s", $table -> phase(), $table -> who());
         echo json_encode(new Message($table -> pool, $msg));
     }
+
+    // long polling loop
+    function await() {
+
+        $db = DB::getConnection();
+        $player = $_POST["player"];
+
+        while(true) {
+            $res = $db -> query("
+                select who from State where id = 1;
+            ");
+            $who = $res -> fetchAll()[0]["who"];
+
+            // request matches the database state
+            if($player == $who) {
+                echo json_encode(new Message(null, null));
+                break;
+            }
+            usleep(100000);
+        }
+    }
+
+
 }
 
 ?>
