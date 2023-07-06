@@ -4,6 +4,7 @@ require_once __DIR__ . "/../model/table.class.php";
 
 // sending messages to the client (debugging)
 class Message {
+    
     public $object;
     public $msg;
     function __construct($o, $m) {

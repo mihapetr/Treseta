@@ -14,7 +14,7 @@ class Table implements JsonSerializable {
 
     protected $phase;       // numerical representation of the phase (a key for $phases)
     protected $players;     // a list of 4 players
-    protected $scores;      // turn scores
+    protected $scores;      // turn scores, list
     public $pool;        // a Pool object   // ? magic setter not working
     protected $who;         // whose turn it is to play 
     protected $calls;       // bonus points: akužavanje
@@ -212,6 +212,12 @@ class Table implements JsonSerializable {
         else $odds += 1;
 
         $this -> scores[] = [$evens, $odds];
+    }
+
+    // getter
+    function scores() {
+
+        return $this -> scores;
     }
 
     // saves the Table object to the database;

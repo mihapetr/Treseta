@@ -8,6 +8,8 @@
     * demonstrirane funkcionalnosti modela pomoću otvorene igre (pokaži)
 * treba napraviti ulogiravanje/prijavu igrača
 * treba napraviti prezentaciju : što ide u nju?
+* kraj igre : 2 opcije
+    * zatvranje prozora : prekida se igra svima : povratak na prijavu
 
 ## Pravila
 * prati se boja
