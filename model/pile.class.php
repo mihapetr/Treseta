@@ -37,7 +37,7 @@ class Pile extends Collection implements JsonSerializable {
 
         $sum = 0;
 
-        foreach ($cards as $key => $card) {
+        foreach ($this -> cards as $key => $card) {
             $sum += $card -> val();
         }
 

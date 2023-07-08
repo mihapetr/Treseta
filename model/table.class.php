@@ -194,7 +194,7 @@ class Table implements JsonSerializable {
     // save the score
     // evens : p0, p2
     // odds : p1, p3
-    private function count() {
+    function count() {
 
         $evens = 0;
         $odds = 0;

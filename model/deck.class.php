@@ -57,8 +57,9 @@ class Deck extends Collection {
         else if($count == 3) {
             if($cards[0]->suit == $cards[1]->suit and $cards[1]->suit == $cards[2]->suit) {
                 // 1,2,3 ?
-                usort($cards, [Card::class, "cmp"]);
-                if(
+                $labels = [];
+                // finish
+                foreach(
                     $cards[0]->image[1] != "1" or
                     $cards[1]->image[1] != "2" or
                     $cards[2]->image[1] != "3"

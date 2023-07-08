@@ -46,6 +46,7 @@ body {
     top : 0px;
     right : 0px;
 }
+
 td {
     border-radius : 10px;
     border : 1px solid black;
@@ -63,13 +64,13 @@ td {
     P3:<div id="h3" class="hand"></div><button id="c3" class="call">call_3</button><br><br>
     <table id="pool">
     <tr>
-        <td></td> <td id="t2">P2</td> <td></td>
+        <td></td> <td id="t2" class="table">P2</td> <td></td>
     </tr>
     <tr>
-        <td id="t1">P1</td> <td></td> <td id="t3">P3</td>
+        <td id="t1" class="table">P1</td> <td></td> <td id="t3" class="table">P3</td>
     </tr>
     <tr>
-        <td></td> <td id="t0">P0</td> <td></td>
+        <td></td> <td id="t0" class="table">P0</td> <td></td>
     </tr>
     </table>
     <br>
@@ -80,7 +81,8 @@ td {
     P1:<div id="p1" class="pile"></div><br><br>
     P2:<div id="p2" class="pile"></div><br><br>
     P3:<div id="p3" class="pile"></div><br><br>
-    
+    <hr>
+    scores: <div id="scores"></div>
 </div>
 
 <script>
@@ -176,16 +178,36 @@ function place_card(resp) {
     // get and remove the box that was clicked
     let box = $(`#${resp.msg[0]}${resp.msg[1]}`);
     box.remove();
+
     // place the card on the table
     $(`#t${resp.msg[0]}`).html("").append(box);
     // if the server said "c" cards from the pool were collected
     if(resp.msg[2] == "c") {
         setTimeout(() => {
+            // add to the pile
+            let pileCards = $(".table").children();
+            $(`#p${resp.msg[3]}`).append(pileCards);
+            // empty the pool
             $("td").html(``);
+            if(resp.msg[4] == "s") update_score();
         }, 1500);       // time that passes before cards are not displayed any more
     }
 
     wait_turn(player);
+}
+
+// testing the auto calculator
+function update_score() {
+
+    $.ajax({
+        url : "index.php?rt=open/getScores",
+        data : {},
+        method : "POST",
+        dataType : "json",  
+        success : function(resp) {
+            console.log(resp);
+        }
+    });
 }
 
 // buttons for calling the "akužavanje"

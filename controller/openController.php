@@ -69,7 +69,11 @@ class OpenController {
         $table -> endPhase();
         $table -> save();
         $msg = $player . $card;
-        if($table -> pool -> isEmpty()) $msg .= "c";
+        if($table -> pool -> isEmpty()) {
+            $msg .= "c";    // collect the pool on the client
+            $msg .= $table -> who();    // who won the trick
+            if($table -> phase()[1] == "0") $msg .= "s";    // client updates scores
+        }
         $log = sprintf("phase: %s, player: %s", $table -> phase(), $table -> who());
         echo json_encode(new Message($log, $msg));
     }
@@ -106,7 +110,11 @@ class OpenController {
         }
     }
 
+    function getScores() {
 
+        $table = Table::load();
+        echo json_encode($table -> scores());
+    }
 }
 
 ?>
