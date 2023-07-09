@@ -2,6 +2,7 @@
 
 require_once __DIR__ . "/hand.class.php";
 require_once __DIR__ . "/pile.class.php";
+require_once __DIR__ . "/call.class.php";
 
 
 class Player implements JsonSerializable {
@@ -9,6 +10,7 @@ class Player implements JsonSerializable {
     protected $name;
     protected $position;    // position at the table
 
+    protected $call;        // cards for bonus points
     // every player has a hand of cards and a pile of won cards
     protected $hand;
     protected $pile;
@@ -19,6 +21,7 @@ class Player implements JsonSerializable {
         $this -> position = $position;
         $this -> hand = new Hand;
         $this -> pile = new Pile;
+        $this -> call = new Call;
     }
 
     // encodes protected values
@@ -60,6 +63,10 @@ class Player implements JsonSerializable {
     function name() {
 
         return $this -> name;
+    }
+
+    function call() {
+        return $this -> call;
     }
 
     // for playing a card

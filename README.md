@@ -2,6 +2,15 @@
 * koristimo engleski za nazivlje unutar koda
 * puno komentara bi bilo lijepo
 
+# Prezentacija
+* pravila igre
+* baza podataka
+* model
+* testovi
+* kontrola toka (ajax, long polling)
+* view
+* controller
+
 # Briefing
 
 * modifikacija openGame.php u client verzije

@@ -57,9 +57,20 @@ class OpenController {
         $player = $_POST["played"][0];  // first char in card box id
         $card = $_POST["played"][1];    // second char in card box id
 
-        // check if it is a legal move
+        // create objects
         $physicalCard = $table -> players()[$player] -> hand() -> card($card);
         $physicalPlayer = $table -> players()[$player];
+
+        // player is adding or removing cards from the call
+        if(explode(",", $table -> phase())[0] == "call") {
+            $deed = $physicalPlayer -> call() -> add_or_remove($physicalCard);
+            // $deed is "removed" or "added" 
+            $table -> save();   
+            echo json_encode(new Message($deed[1], $deed[0]));
+            exit(0);
+        }
+
+        // is it a legal play?
         if(! $table -> pool -> isLegal($physicalPlayer, $physicalCard)) {
             echo json_encode(new Message(null, "illegal"));
             exit(1);      
@@ -82,7 +93,7 @@ class OpenController {
     function call() {
 
         $table = Table::load();
-        // todo
+        // show cards to other players
         $table -> endPhase();
         $table -> save();
         $msg = sprintf("phase: %s, player: %s", $table -> phase(), $table -> who());

@@ -29,6 +29,11 @@ class Collection implements JsonSerializable {
         return $this -> cards;
     }
 
+    function setCards($_cards) {
+
+        $this -> cards = $_cards;
+    }
+
     // empty the collection
     function empty() {
         $this -> cards = [];

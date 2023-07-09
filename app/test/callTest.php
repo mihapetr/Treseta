@@ -58,9 +58,13 @@ $cardSets[] = [
     new Card("","s","","s7")
 ];
 
-echo "expected: 3344030 <hr>";
+$cardSets[] = [];
+
+echo "expected: 33440300 <hr>";
 foreach ($cardSets as $key => $cards) {
-    echo "value: " . Deck::call($cards) . "<br>";
+    $call = new Call();
+    $call -> setCards($cards);
+    echo "value: " . $call -> evaluate() . "<br>";
 }
 
 ?>

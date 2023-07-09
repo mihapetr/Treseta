@@ -38,7 +38,7 @@
     display: inline-block;
 }
 body {
-    background-color : lightgreen;
+    background-color : #a8853e;
     /*overflow : hidden;*/
 }
 #pool {
@@ -73,8 +73,8 @@ td {
         <td></td> <td id="t0" class="table">P0</td> <td></td>
     </tr>
     </table>
-    <br>
-    
+    <hr>
+    call: <div id="display"></div>
     <hr>
     piles:<br>
     P0:<div id="p0" class="pile"></div><br><br>
@@ -138,8 +138,12 @@ function show(hands) {
 // make cards clickable
 function clickable() {
 
+    // to pass to the success function
+    card_id = null;
+
     $(".hand").on("click", ".box", function() {
         console.log(`clicked: ${this.id}`);
+        card_id = this.id;
         // playing of a card should be reflected in the game state
         // todo: add a turn condition
         // todo: add a legal condition
@@ -154,6 +158,18 @@ function clickable() {
             success : function(resp) {
                 if(resp.msg == "illegal") {
                     warning();
+                    return;
+                }
+                if(resp.msg == "wrong_action") {
+                    alert(`Wrong action!`);
+                    return;
+                }
+                if(resp.msg == "added") {
+                    $(`#${card_id}>img`).css("filter", "grayscale(100%)");
+                    return;
+                }
+                if(resp.msg == "removed") {
+                    $(`#${card_id}>img`).css("filter", "grayscale(0%)");
                     return;
                 }
                 place_card(resp);

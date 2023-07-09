@@ -73,6 +73,12 @@ class Card implements JsonSerializable {
         return $this -> image . ".jpg";
     }
 
+    // standard getter
+    function image() {
+
+        return $this -> image;
+    }
+
     // for debugging
     function __toString() {
         return sprintf("
