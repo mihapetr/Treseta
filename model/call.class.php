@@ -6,6 +6,8 @@ require_once __DIR__ . "/collection.class.php";
 
 class Call extends Collection implements JsonSerializable {
 
+    public static $combinations = null;
+
     // intitialize an empty collection
     function __construct() {
 
@@ -17,6 +19,43 @@ class Call extends Collection implements JsonSerializable {
 
         $vars = get_object_vars($this);
         return $vars;
+    }
+
+    // for calling, all possible calls
+    public static function combinations() {
+        
+        if(($it = Call::$combinations) != null) return $it;
+
+        $combos = [];
+        $suits = ["b","c","d","s"];
+
+        // 123 x cbsd
+        for ($i=0; $i < 4; $i++) { 
+            $combos[] = [$suits[$i]."1", $suits[$i]."2", $suits[$i]."3"];
+        }
+        
+        // 1111, 2222, 3333
+        for ($i=1; $i <= 3; $i++) { 
+            $combo = [];
+            for ($j=0; $j < 4; $j++) { 
+                $combo[] = $suits[$j] . $i;
+            }
+            $combos[] = $combo;
+        }
+
+        // 111, 222, 333
+        for ($odd=0; $odd < 4; $odd++) { 
+            for ($lab=1; $lab <= 3; $lab++) { 
+                $combo = [];
+                for ($i=0; $i < 4; $i++) { 
+                    if($i != $odd) $combo[] = $suits[$i] . $lab; 
+                }
+                $combos[] = $combo;
+            }
+        }
+
+        Call::$combinations = $combos;
+        return $combos;
     }
 
     // setter used by loadJSON function?
