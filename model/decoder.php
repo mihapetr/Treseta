@@ -21,9 +21,6 @@ function obj($key) {
         case 'pool':
             return new Pool();
             break;
-        case 'call':
-            return new Call();
-            break;
         default:
             throw new Exception("Default class?", 1);
             break;

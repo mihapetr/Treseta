@@ -15,8 +15,9 @@ class Table implements JsonSerializable {
     protected $phase;       // numerical representation of the phase (a key for $phases)
     protected $players;     // a list of 4 players
     protected $scores;      // turn scores, list
-    public $pool;        // a Pool object   
+    public $pool;        // a Pool object   // ? magic setter not working
     protected $who;         // whose turn it is to play 
+    protected $calls;       // bonus points: akužavanje
 
     public static function getPhases() {
 
@@ -44,7 +45,6 @@ class Table implements JsonSerializable {
         $this -> players = [];
         $this -> scores = [];
         $this -> pool = new Pool();
-        $this -> calls = array_fill(0,4, array());
         $this -> phase = -1;    // represents the seating phase
         // if a phase is ended after all players are seated, cards will be dealt
     }
@@ -210,9 +210,6 @@ class Table implements JsonSerializable {
         // $who property holds info about the winner of the last trick
         if($this -> who % 2 == 0) $evens += 1;
         else $odds += 1;
-
-        // add bonus points from calls
-        # todo...
 
         $this -> scores[] = [$evens, $odds];
     }

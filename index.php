@@ -4,7 +4,7 @@
 if( isset( $_GET['rt'] ) )
 	$route = $_GET['rt'];
 else
-	$route = 'index';
+	$route = 'login';
 
 // Ako je $route == 'con/act', onda rastavi na $controllerName='con', $action='act'
 $parts = explode( '/', $route );
@@ -16,13 +16,13 @@ else
 	$action = 'index';
 
 // Controller $controllerName se nalazi poddirektoriju controller
-$controllerFileName = __DIR__ . '/../controller/' . $controllerName . '.php';
+$controllerFileName = __DIR__ . '/controller/' . $controllerName . '.php';
 
 // Includeaj tu datoteku
 if( !file_exists( $controllerFileName ) )
 {
 	$controllerName = '_404Controller';
-	$controllerFileName = __DIR__ . '/../controller/' . $controllerName . '.php';
+	$controllerFileName = __DIR__ . '/controller/' . $controllerName . '.php';
 }
 
 require_once $controllerFileName;

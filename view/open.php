@@ -7,53 +7,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trešeta</title>
-    <!--<link rel="stylesheet" type="text/css" href="openStyle.css" >-->
+    <link rel="stylesheet" type="text/css" href="openStyle.css" >
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.js"></script>
-    <!--<script src="openScript.js"></script>-->    
-    <style>
-.box {
-    display  : inline-block;
-    width : 50px;
-    overflow : hidden;
-}
-.box:hover {
-    width : auto;
-    position : relative;
-    /*top : 20px;*/
-}
-.box:last-child {
-    width : auto;
-}
-.card {
-    border-radius : 10px;
-    border : 1px solid black;
-    height : 200px;
-}
-.hand {
-    text-align : center;
-    border : 1px solid red;
-    width : 60vw;
-    height : 120px;
-    overflow : hidden;
-    display: inline-block;
-}
-body {
-    background-color : #a8853e;
-    /*overflow : hidden;*/
-}
-#pool {
-    position : absolute;
-    top : 0px;
-    right : 0px;
-}
-
-td {
-    border-radius : 10px;
-    border : 1px solid black;
-    height : 200px;
-    width : 110px;
-}
-    </style>
+    <script src="openScript.js"></script>
 </head>
 <body>
     
@@ -73,8 +29,8 @@ td {
         <td></td> <td id="t0" class="table">P0</td> <td></td>
     </tr>
     </table>
-    <hr>
-    call: <div id="display"></div>
+    <br>
+    
     <hr>
     piles:<br>
     P0:<div id="p0" class="pile"></div><br><br>
@@ -138,12 +94,8 @@ function show(hands) {
 // make cards clickable
 function clickable() {
 
-    // to pass to the success function
-    card_id = null;
-
     $(".hand").on("click", ".box", function() {
         console.log(`clicked: ${this.id}`);
-        card_id = this.id;
         // playing of a card should be reflected in the game state
         // todo: add a turn condition
         // todo: add a legal condition
@@ -158,18 +110,6 @@ function clickable() {
             success : function(resp) {
                 if(resp.msg == "illegal") {
                     warning();
-                    return;
-                }
-                if(resp.msg == "wrong_action") {
-                    alert(`Wrong action!`);
-                    return;
-                }
-                if(resp.msg == "added") {
-                    $(`#${card_id}>img`).css("filter", "grayscale(100%)");
-                    return;
-                }
-                if(resp.msg == "removed") {
-                    $(`#${card_id}>img`).css("filter", "grayscale(0%)");
                     return;
                 }
                 place_card(resp);
