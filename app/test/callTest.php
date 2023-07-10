@@ -36,7 +36,7 @@ $cardSets[] = [
     new Card("","b","","b2")
 ];
 
-// expected value is 0
+// expected value is 3 because a call combination is its subset
 $cardSets[] = [
     new Card("","s","","s3"),
     new Card("","d","","d3"),
@@ -58,9 +58,28 @@ $cardSets[] = [
     new Card("","s","","s7")
 ];
 
-$cardSets[] = [];
+// ev: 3 + 4 
+$cardSets[] = [
+    new Card("","s","","s1"),
+    new Card("","s","","s2"),
+    new Card("","s","","s3"),
+    new Card("","d","","d3"),
+    new Card("","c","","c3"),
+    new Card("","b","","b3"),
+    new Card("","","","s5")
+];
 
-echo "expected: 33440300 <hr>";
+// ev: 3 + 3
+$cardSets[] = [
+    new Card("","s","","s1"),
+    new Card("","s","","s2"),
+    new Card("","s","","s3"),
+    new Card("","d","","d3"),
+    new Card("","c","","c3")
+];
+
+
+echo "expected: 334433076 <hr>";
 foreach ($cardSets as $key => $cards) {
     $call = new Call();
     $call -> setCards($cards);

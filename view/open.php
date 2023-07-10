@@ -83,6 +83,7 @@ td {
     P3:<div id="p3" class="pile"></div><br><br>
     <hr>
     scores: <div id="scores"></div>
+    <button onclick="update_score()">scores</button>
 </div>
 
 <script>
@@ -205,7 +206,11 @@ function place_card(resp) {
             $(`#p${resp.msg[3]}`).append(pileCards);
             // empty the pool
             $("td").html(``);
-            if(resp.msg[4] == "s") update_score();
+            if(resp.msg[4] == "s") {
+                update_score();
+                update_hands(); // new dealing, new hands
+                $(".pile").html("");
+            }
         }, 1500);       // time that passes before cards are not displayed any more
     }
 
@@ -232,11 +237,18 @@ function callable() {
     $(".call").on("click", function(){
         $.ajax({
             url : "index.php?rt=open/call",
-            data : {},  // pass the cards
+            data : {
+                player : this.id[1]
+            },  
             method : "POST",
             dataType : "json",  
             success : function(resp) {
-                console.log(resp.msg);
+                if(resp.msg == "wrong_action") {
+                    alert("Not in calling phase!");
+                    return;
+                }
+                $(`img`).css("filter", "grayscale(0%)");
+                console.log(`call: ${resp.object}`);
             }  
         });
     });

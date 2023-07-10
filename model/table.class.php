@@ -180,6 +180,12 @@ class Table implements JsonSerializable {
         
         $deck = new Deck;
         $target = ($dealer + 1) % 4;
+
+        // empty everone's hand
+        foreach ($this -> players as $key => $player) {
+            $player -> hand() -> empty();
+        }
+
         while(! $deck -> isEmpty()) {
             for ($i=0; $i < 5; $i++) { 
                 // deal a card to the target player
@@ -207,12 +213,19 @@ class Table implements JsonSerializable {
         $evens = intdiv($evens, 3);
         $odds = intdiv($odds, 3);
 
-        // $who property holds info about the winner of the last trick
-        if($this -> who % 2 == 0) $evens += 1;
+        // lastWinner() holds info about the winner of the last trick
+        if($this -> pool -> lastWinner() % 2 == 0) $evens += 1;
         else $odds += 1;
 
         // add bonus points from calls
-        # todo...
+        foreach ($this -> players as $key => $player) {
+            if($key%2 == 0) {
+                $evens += $player -> call() -> value();
+            }
+            if($key%2 == 1) {
+                $odds += $player -> call() -> value();
+            }
+        }
 
         $this -> scores[] = [$evens, $odds];
     }

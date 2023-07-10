@@ -8,6 +8,7 @@ class Pool extends Collection implements JsonSerializable {
 
     protected $first;       // position of the first card (player)
     protected $empty;
+    protected $winner;
 
     // intitialize an empty collection
     function __construct() {
@@ -29,6 +30,11 @@ class Pool extends Collection implements JsonSerializable {
     function __set($prop, $val) {
 
         if(property_exists($this, $prop)) $this -> $prop = $val;
+    }
+
+    // getter
+    function lastWinner() {
+        return $this -> winner;
     }
 
     // player on $position plays a card with index $card
@@ -56,6 +62,7 @@ class Pool extends Collection implements JsonSerializable {
             if(Card::gt($contestorCard, $winnerCard)) $winner = $contestor;
         }
 
+        $this -> winner = $winner;
         return $winner;
     }
 

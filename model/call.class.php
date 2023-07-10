@@ -8,10 +8,13 @@ class Call extends Collection implements JsonSerializable {
 
     public static $combinations = null;
 
+    private $value;
+
     // intitialize an empty collection
     function __construct() {
 
         parent::__construct();
+        $this -> value = 0;
     }
 
     // encodes protected values
@@ -80,48 +83,45 @@ class Call extends Collection implements JsonSerializable {
         return ["added", $this -> cards];
     } 
 
-    // returns the value of the calling cards
+    // returns the value of the calling cards in this collection
+    // points are punats, not belas
+    // needs to be called while the hand is still full
     function evaluate() {
 
-        $cards = $this -> cards;
-
-        $count = count($cards);
-        if($count < 3 or $count > 4) return 0;
-        // 1,1,1,1 / 2,2,2,2 / 3,3,3,3 ?
-        if($count == 4) {
-            $label = $cards[0] -> image()[1];
-            if(!in_array($label, ["1","2","3"])) return 0;
-            foreach ($cards as $key => $card) {
-                if($card -> image()[1] != $label) return 0;
-            }
-            return 4;
+        $combos = Call::combinations();
+        $sum = 0;       // for the final result
+        $labels = [];   // labels in this collection
+        $taboo = [];    // if a player has x,x,x it is not valid to have x,x,x,x
+        foreach ($this -> cards as $key => $card) {
+            $labels[] = $card -> image();
         }
-        else if($count == 3) {
-            if($cards[0]->suit == $cards[1]->suit and $cards[1]->suit == $cards[2]->suit) {
-                // 1,2,3 ?
-                $labels = [];
-                // finish
-                for ($i=0; $i < 3; $i++) { 
-                    if(isset($cards[$i] -> image()[2])) return 0;
-                    $labels[] = $cards[$i] -> image()[1];
+
+        foreach ($combos as $key => $combo) {
+            if(Collection::label_subset($combo, $labels)) {
+                // relating to the $taboo comment
+                if($key >= 4 and $key <= 6) {
+                    for ($i=1; $i <= 4; $i++) { 
+                        $taboo[] = 3*$i + $key;
+                    }
                 }
-                for ($i=1; $i <= 3; $i++) { 
-                    if(!in_array($i, $labels)) return 0;
+                // relating to the taboo comment
+                if(!in_array($key, $taboo)) {
+                    $sum += count($combo);
                 }
-                return 3;
-            }
-            else {
-                // 1,1,1 / 2,2,2 / 3,3,3 ?
-                $label = $cards[0] -> image()[1];
-                if(!in_array($label, ["1","2","3"])) return 0;
-                foreach ($cards as $key => $card) {
-                    if($card -> image()[1] != $label) return 0;
-                }
-                return 3;
             }
         }
 
+        $this -> value = $sum;
+        return $sum;
     }
+
+    // getter
+    function value() {
+        $res = $this -> value;
+        $this -> value = 0;
+        return $res;
+    }
+
 }
 
 ?>

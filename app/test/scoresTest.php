@@ -53,19 +53,21 @@ $table -> acceptPlayer(new Player("Donatella", 0));
 $table -> acceptPlayer(new Player("Samuel", 1));
 $table -> acceptPlayer(new Player("Štoki", 2));
 $table -> acceptPlayer(new Player("Zoki", 3));
-$table -> endPhase();
+$table -> endPhase();   // now everyone has cards
 
 // all players win their hands (they become their piles)
 foreach ($table -> players() as $key => $player) {
     $cards = $player -> hand() -> cards();
     $player -> pile() -> add($cards);
+    $player -> call() -> setCards($cards);
 
     // display cards for manual counting
     foreach ($cards as $key => $card) {
         $src = "../card_art/" . $card -> img();
         echo sprintf("<div class='box'><img src='%s' class='card'></div>", $src);
     }
-    echo "<br>";
+    echo "call: " . $player -> call() -> evaluate();
+    echo "<hr>";
 }
 
 

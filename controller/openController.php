@@ -82,8 +82,8 @@ class OpenController {
         $msg = $player . $card;
         if($table -> pool -> isEmpty()) {
             $msg .= "c";    // collect the pool on the client
-            $msg .= $table -> who();    // who won the trick
-            if($table -> phase()[1] == "0") $msg .= "s";    // client updates scores
+            $msg .= $table -> pool -> lastWinner();    // who won the trick
+            if(explode(",", $table -> phase())[0] == "call") $msg .= "s";    // client updates scores
         }
         $log = sprintf("phase: %s, player: %s", $table -> phase(), $table -> who());
         echo json_encode(new Message($log, $msg));
@@ -94,10 +94,21 @@ class OpenController {
 
         $table = Table::load();
         // show cards to other players
+
+        if(explode(",", $table -> phase())[0] != "call") {
+            $msg = "wrong_action";
+            echo json_encode(new Message(null, $msg));
+            exit(1);
+        }
+
+        $player = $_POST["player"];
+
+        $val = $table -> players()[$player] -> call() -> evaluate();   // Call::$value now has value
+
         $table -> endPhase();
         $table -> save();
-        $msg = sprintf("phase: %s, player: %s", $table -> phase(), $table -> who());
-        echo json_encode(new Message($table -> pool, $msg));
+        $msg = "called";
+        echo json_encode(new Message($val, $msg));
     }
 
     // long polling loop
@@ -114,6 +125,12 @@ class OpenController {
 
             // request matches the database state
             if($player == $who) {
+                /*$table = Table::load();
+                // if a player needs a new hand
+                $msg = "";
+                if(explode(",", $table -> phase())[0] == "call") {
+                    $msg = "new_hand";
+                }*/
                 echo json_encode(new Message(null, null));
                 break;
             }

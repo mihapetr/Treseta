@@ -49,6 +49,19 @@ class Collection implements JsonSerializable {
     function push($card) {
         $this -> cards[] = $card;
     }
+
+    // check if an array of cards $s1 is subset of $s2
+    // uses only the image property of the card
+    public static function label_subset($s1, $s2) {
+
+        foreach ($s1 as $key => $label) {
+            if(!in_array($label, $s2)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
 
 ?>
