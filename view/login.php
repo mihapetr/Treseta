@@ -12,7 +12,7 @@
         <br>
         <br>
         Željena pozicija:
-        <input type="radio" name="position" value="0">
+        <input type="radio" name="position" value="0" checked = "checked">
         <label for="0">1.</label>
         <input type="radio" name="position" value="1">
         <label for="1">2.</label>
