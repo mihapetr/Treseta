@@ -30,7 +30,7 @@ class loginController
         $db = DB::getConnection();
 
         $username = $_POST["username"];
-        $position = $_POST["position"];
+        $position = (int) $_POST["position"];
 
         $table = Table::load();
         $table -> acceptPlayer(new Player($username, $position));
