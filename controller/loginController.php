@@ -17,7 +17,7 @@ class loginController
     {
         if (!isset($_POST["username"]))
         {
-            echo "Nije postavljeno korisničko ime!";
+            $this -> index("Nije postavljeno korisničko ime!");
             exit();
         }
 
@@ -32,9 +32,32 @@ class loginController
         $username = $_POST["username"];
         $position = (int) $_POST["position"];
 
-        $table = Table::load();
-        $table -> acceptPlayer(new Player($username, $position));
 
+        $table = Table::load();
+
+        if ($table -> getValid() === false)
+        {
+            $table = new Table;
+            $table -> setValid(true);
+            $table -> save();
+        }
+
+        try
+        {
+            $table -> acceptPlayer(new Player($username, $position));
+            $table -> save();
+        }
+        catch(Exception $e)
+        {
+            echo "Seat taken!";
+        }
+
+        $numberOfPlayers = count($table -> players());
+        if ($numberOfPlayers === 4)
+        {
+            $table -> endPhase();
+            $table -> save();
+        }
         
     }
 };

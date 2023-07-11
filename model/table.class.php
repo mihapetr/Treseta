@@ -17,6 +17,7 @@ class Table implements JsonSerializable {
     protected $scores;      // turn scores, list
     public $pool;        // a Pool object   
     protected $who;         // whose turn it is to play 
+    protected $valid;       // tracks if a player leaves the game
 
     public static function getPhases() {
 
@@ -44,7 +45,7 @@ class Table implements JsonSerializable {
         $this -> players = [];
         $this -> scores = [];
         $this -> pool = new Pool();
-        $this -> calls = array_fill(0,4, array());
+        $this -> valid = false;
         $this -> phase = -1;    // represents the seating phase
         // if a phase is ended after all players are seated, cards will be dealt
     }
@@ -81,6 +82,15 @@ class Table implements JsonSerializable {
         $this -> players[] = $player;
     }
 
+    // setter and getter for valid
+    function getValid(){
+        return $this -> valid; 
+    }
+
+    function setValid($bool){
+        $this -> valid = $bool;
+    }
+
     // returns the current phase
     function phase() {
 
@@ -91,25 +101,6 @@ class Table implements JsonSerializable {
     function who() {
 
         return $this -> who;
-    }
-
-    // check if cards can be called, and call
-    // args: player index and list of card indexes
-    function isLegalCall($playerI, $cardsI) {
-
-        $player = $this -> players[$playerI];
-        $called = [];
-        $hand = $player -> hand -> cards;
-        foreach ($cardsI as $key) {
-            $called[] = $hand[$key];
-        }
-
-        $value = Deck::call($called);
-        if ($value == 0) return FALSE;
-        else {
-            $this -> calls[$playerI] = $value;
-            return TRUE;
-        }
     }
 
     // playing a card

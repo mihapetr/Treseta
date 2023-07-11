@@ -1,3 +1,9 @@
+<?php
+
+require_once __DIR__ . "/../controller/loginController.php"
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,5 +30,11 @@
         <br>
         <button type="submit">Uđi u igru!</button>
     </form>
+    <?php
+    if (isset($_POST["username"]))
+    {
+        // pozovi analyze login
+    }
+    ?>
 </body>
 </html>
