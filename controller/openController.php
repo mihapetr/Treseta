@@ -11,7 +11,7 @@ class Message {
         $this -> object = $o;
         $this -> msg = $m;
     }
-}
+};
 
 class OpenController {
 
@@ -143,6 +143,6 @@ class OpenController {
         $table = Table::load();
         echo json_encode($table -> scores());
     }
-}
+};
 
 ?>

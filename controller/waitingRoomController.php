@@ -24,6 +24,6 @@ class waitingRoomController {
             usleep(1000000);
         }
     }
-}
+};
 
 ?>

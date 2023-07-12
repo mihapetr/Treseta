@@ -10,7 +10,7 @@ class Message {
         $this -> object = $o;
         $this -> msg = $m;
     }
-}
+};
 
 class gameController {
 
@@ -18,6 +18,6 @@ class gameController {
     function index() {
 
     }
-}
+};
 
 ?>
