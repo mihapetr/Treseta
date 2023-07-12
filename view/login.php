@@ -39,7 +39,7 @@ require_once __DIR__ . "/../controller/loginController.php"
                 url : "index.php?rt=login/analyzeLogin",
                 data : {},
                 method : "POST",
-                dataType : "json"
+                dataType : "json",
                 success : function(resp){
                     console.log(resp);
                 }
