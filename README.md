@@ -1,3 +1,6 @@
+# VAŽNO
+OVO JE STARA GRANA! GLAVNA GRANA JE pomocna
+
 # Generalno
 * koristimo engleski za nazivlje unutar koda
 * puno komentara bi bilo lijepo
