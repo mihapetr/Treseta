@@ -7,6 +7,7 @@ class loginController
     // starts the login process
     public function index($errorMsg = "")
     {
+        if ($errorMsg !== "") alert($errorMsg);
         require_once __DIR__ . "/../view/login.php";
     }
 
@@ -15,13 +16,11 @@ class loginController
         if (!isset($_POST["username"]))
         {
             $this -> index("Username not set!");
-            exit();
         }
 
         if( !preg_match( "/^[a-zA-Z]{3,20}$/", $_POST["username"] ) )
 	    {
             $this->index("Please enter a name with 3-20 letters.");
-            exit();
 	    }
 
         session_start();
@@ -30,14 +29,13 @@ class loginController
 
         $username = $_POST["username"];
         $position = (int) $_POST["position"];
-
+        echo $username;
 
         $table = Table::load();
 
         if ($table -> getValid() === false)
         {
             $table = new Table;
-            $table -> setValid(true);
             $table -> save();
         }
 

@@ -290,6 +290,18 @@ function main() {
     callable();     // button for akužavanje (for now just skips turn)
 }
 
+$(window).on("unload",function(){
+    $.ajax({
+        url : "index.php?rt=game/removePlayers",
+        data : {},
+        method : "POST",
+        dataType : "json",
+        success : function(resp){
+            console.log(resp);
+        }
+    });
+});
+
 </script>
 
 </body>

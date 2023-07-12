@@ -16,7 +16,14 @@ class gameController {
 
     
     function index() {
+        require_once __DIR__ . "/../view/game.php";
+    }
 
+    function invalidate(){
+        $table = Table::load();
+        $table -> setValid(false);
+        session_unset();
+        session_destroy();
     }
 };
 

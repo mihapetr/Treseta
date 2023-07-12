@@ -45,7 +45,7 @@ class Table implements JsonSerializable {
         $this -> players = [];
         $this -> scores = [];
         $this -> pool = new Pool();
-        $this -> valid = false;
+        $this -> valid = true;
         $this -> phase = -1;    // represents the seating phase
         // if a phase is ended after all players are seated, cards will be dealt
     }

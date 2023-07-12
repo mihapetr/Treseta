@@ -8,7 +8,7 @@
 
 </head>
 <body>
-    <form action="<?php echo htmlentities($_SERVER["PHP_SELF"]); ?>" method="post">
+    <form action="index.php?rt=login/analyzeLogin" method="post">
         Username:
         <input type="text" name="username">
         <br>
@@ -24,7 +24,7 @@
         <label for="3">4.</label>
         <br>
         <br>
-        <button type="submit" onclick="analyze()">Uđi u igru!</button>
+        <button type="submit">Uđi u igru!</button>
     </form>
     <script>
         // function that adds a player if possible
@@ -39,6 +39,18 @@
                 }
             });
         }
+
+        $(window).on("unload", function(){
+            $.ajax({
+                url : "index.php?rt=game/invalidate",
+                data : {},
+                method : "POST",
+                dataType : "json",
+                success : function(resp){
+                    console.log(resp);
+                }
+            });
+        });
     </script>
 </body>
 </html>
