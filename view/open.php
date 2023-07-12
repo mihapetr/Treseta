@@ -92,7 +92,7 @@ td {
 function start() {
 
     $.ajax({
-        url : "index.php?rt=open/index",
+        url : "test.index.php?rt=open/index",
         data : {},
         method : "POST",
         dataType : "json",  
@@ -111,7 +111,7 @@ function start() {
 function update_hands() {
 
     $.ajax({
-        url : "index.php?rt=open/getHands",
+        url : "test.index.php?rt=open/getHands",
         data : {},
         method : "POST",
         dataType : "json",  
@@ -149,7 +149,7 @@ function clickable() {
         // todo: add a turn condition
         // todo: add a legal condition
         $.ajax({
-            url : "index.php?rt=open/play",
+            url : "test.index.php?rt=open/play",
             data : {
                 played : this.id
             },
@@ -221,7 +221,7 @@ function place_card(resp) {
 function update_score() {
 
     $.ajax({
-        url : "index.php?rt=open/getScores",
+        url : "test.index.php?rt=open/getScores",
         data : {},
         method : "POST",
         dataType : "json",  
@@ -236,7 +236,7 @@ function callable() {
 
     $(".call").on("click", function(){
         $.ajax({
-            url : "index.php?rt=open/call",
+            url : "test.index.php?rt=open/call",
             data : {
                 player : this.id[1]
             },  
@@ -258,7 +258,7 @@ function callable() {
 function wait_turn(i) {
 
     $.ajax({
-        url : "index.php?rt=open/await",
+        url : "test.index.php?rt=open/await",
         data : {
             player : i
         },
