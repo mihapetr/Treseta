@@ -7,7 +7,7 @@ class loginController
     // starts the login process
     public function index($errorMsg = "")
     {
-        if ($errorMsg !== "") alert($errorMsg);
+        if ($errorMsg !== "") echo $errorMsg;
         require_once __DIR__ . "/../view/login.php";
     }
 
@@ -15,6 +15,7 @@ class loginController
     {
         if (!isset($_POST["username"]))
         {
+            header ("Location : " . __DIR__ . "/index.php?rt=open");
             $this -> index("Username not set!");
         }
 
@@ -23,13 +24,12 @@ class loginController
             $this->index("Please enter a name with 3-20 letters.");
 	    }
 
-        session_start();
+        if (session_id() === "") session_start();
 
         $db = DB::getConnection();
 
         $username = $_POST["username"];
         $position = (int) $_POST["position"];
-        echo $username;
 
         $table = Table::load();
 
@@ -59,13 +59,15 @@ class loginController
         {
             $table -> endPhase();
             $table -> save();
-            header( 'Location: index.php?rt=game' );
+            header( "Location: " . __DIR__ . "/index.php?rt=game" );
+            exit();
         }
 
         // if not, go to the waiting room
         else
         {
-            header( 'Location: index.php?rt=waitingRoom' );
+            header( "Location: " . __DIR__ . "/index.php?rt=waitingRoom" );
+            exit();
         }
         
     }

@@ -39,18 +39,6 @@
                 }
             });
         }
-
-        $(window).on("unload", function(){
-            $.ajax({
-                url : "index.php?rt=game/invalidate",
-                data : {},
-                method : "POST",
-                dataType : "json",
-                success : function(resp){
-                    console.log(resp);
-                }
-            });
-        });
     </script>
 </body>
 </html>
