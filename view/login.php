@@ -15,11 +15,11 @@ require_once __DIR__ . "/../controller/loginController.php"
 </head>
 <body>
     <form action="<?php echo htmlentities($_SERVER["PHP_SELF"]); ?>" method="post">
-        Korisničko ime:
+        Username:
         <input type="text" name="username">
         <br>
         <br>
-        Željena pozicija:
+        Position:
         <input type="radio" name="position" value="0" checked = "checked">
         <label for="0">1.</label>
         <input type="radio" name="position" value="1">
@@ -43,7 +43,7 @@ require_once __DIR__ . "/../controller/loginController.php"
                 success : function(resp){
                     console.log(resp);
                 }
-            })
+            });
         }
     </script>
 </body>

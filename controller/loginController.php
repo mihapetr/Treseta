@@ -52,15 +52,24 @@ class loginController
             echo "Seat taken!";
         }
 
-        // all 4 players are seated, the game can start
+        $_SESSION["username"] = $username;
+        $_SESSION["position"] = $position;
+
         $numberOfPlayers = count($table -> players());
+        
+        // if all 4 players are seated, the game can start
         if ($numberOfPlayers === 4)
         {
             $table -> endPhase();
             $table -> save();
-            $_SESSION["username"] = $username;
-            $_SESSION["position"] = $position;
             require_once __DIR__ . "/../view/game.php";
+            exit();
+        }
+
+        // if not, go to the waiting room
+        else
+        {
+            require_once __DIR__ . "/../view/waitingRoom.php";
             exit();
         }
         
