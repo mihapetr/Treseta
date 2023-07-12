@@ -1,15 +1,12 @@
 <?php
 
 require_once __DIR__ . "/../model/table.class.php";
-require_once __DIR__ . "/../app/database/db.class.php";
 
 class loginController
 {
     // starts the login process
     public function index($errorMsg = "")
     {
-        if ($errorMsg !== "") echo $errorMsg;
-        else session_start();
         require_once __DIR__ . "/../view/login.php";
     }
 
@@ -17,15 +14,17 @@ class loginController
     {
         if (!isset($_POST["username"]))
         {
-            $this -> index("Nije postavljeno korisničko ime!");
+            $this -> index("Username not set!");
             exit();
         }
 
         if( !preg_match( "/^[a-zA-Z]{3,20}$/", $_POST["username"] ) )
 	    {
-            $this->index("Ime mora imati 3-20 slova!");
+            $this->index("Please enter a name with 3-20 letters.");
             exit();
 	    }
+
+        session_start();
 
         $db = DB::getConnection();
 
@@ -49,7 +48,7 @@ class loginController
         }
         catch(Exception $e)
         {
-            echo "Seat taken!";
+            $this -> index("Seat taken!");
         }
 
         $_SESSION["username"] = $username;
@@ -62,15 +61,13 @@ class loginController
         {
             $table -> endPhase();
             $table -> save();
-            require_once __DIR__ . "/../view/game.php";
-            exit();
+            header( 'Location: index.php?rt=game' );
         }
 
         // if not, go to the waiting room
         else
         {
-            require_once __DIR__ . "/../view/waitingRoom.php";
-            exit();
+            header( 'Location: index.php?rt=waitingRoom' );
         }
         
     }
