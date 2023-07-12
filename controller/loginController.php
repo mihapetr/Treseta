@@ -9,7 +9,7 @@ class loginController
     public function index($errorMsg = "")
     {
         if ($errorMsg !== "") echo $errorMsg;
-        session_start();
+        else session_start();
         require_once __DIR__ . "/../view/login.php";
     }
 
@@ -52,11 +52,16 @@ class loginController
             echo "Seat taken!";
         }
 
+        // all 4 players are seated, the game can start
         $numberOfPlayers = count($table -> players());
         if ($numberOfPlayers === 4)
         {
             $table -> endPhase();
             $table -> save();
+            $_SESSION["username"] = $username;
+            $_SESSION["position"] = $position;
+            require_once __DIR__ . "/../view/game.php";
+            exit();
         }
         
     }
