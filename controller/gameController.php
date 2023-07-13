@@ -20,9 +20,14 @@ class gameController {
     }
 
     function getHand(){
-        $username = $_SESSION["username"];
+        $position = (int) $_SESSION["position"];
         $table = Table::load();
         $hand = [];
+        $player = $table -> players()[$position]; // gets the Player from the table
+        foreach ($player -> hand() -> cards() as $key => $card){
+            $hand[] = $card -> img();
+        }
+        echo json_encode($hand);
 
     }
 
@@ -53,7 +58,7 @@ class gameController {
         $table -> played($player, $card);
         $table -> endPhase();
         $table -> save();
-        $msg = $player . $card;
+        $msg = $card;
         if($table -> pool -> isEmpty()) {
             $msg .= "c";    // collect the pool on the client
             $msg .= $table -> pool -> lastWinner();    // who won the trick
@@ -115,6 +120,7 @@ class gameController {
     function invalidate(){
         $table = Table::load();
         $table -> setValid(false);
+        $table -> save();
         session_unset();
         session_destroy();
     }

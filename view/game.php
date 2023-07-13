@@ -7,18 +7,83 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.js"></script>
 
     <style>
-        .player_call{
-            position: fixed;
+        .box {
+            display  : inline-block;
+            width : 80px;
+            height : 300px;
+            overflow : hidden;
+        }
+        .box:hover {
+            width : auto;
+            position : relative;
+            bottom : 10vw;
+        }
+        .box:last-child {
+            width : auto;
+        }
+        .playing_field{
+            position : fixed;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            top: 0;
+        }
+        .call{
+            position : absolute;
+            right : 20%;
+            bottom : 0;
+        }
+        .card {
+            border-radius : 10px;
+            border : 1px solid black;
+            height : 300px;
+        }
+        .card:hover {
+        }
+        .score{
+            position : absolute;
+            right : 0;
+        }
+        table.center{
+            margin: 0;
+            position: absolute;
+            top: 50%;
             left: 50%;
-            bottom: 20px;
+            margin-right: -50%;
             transform: translate(-50%, -50%);
-            margin: 0 auto;
+        }
+        #hand {
+            text-align : center;
+            position : absolute;
+            bottom : -140px;
+            /*border : 1px solid red;*/
+            width : 98vw;
+        }
+        body {
+            background-color : lightgreen;
+            overflow : hidden;
         }
     </style>
 </head>
 <body>
-    <div id="position" style="display : none;"><?php echo $_SESSION["position"];?></div>
-    <div id="player_call"><div id="player"></div><button id="c_player" class = "call">CALL</button></div>
+    <div id="position" style="display : none;"><?php echo ((int)$_SESSION["position"] + 2)%4; ?></div>
+    <div class="playing_field">
+        <div id="hand"></div><button id="c" class = "call">CALL</button>
+        <table id="pool" class = "center">
+            <tr>
+                <td></td> <td id="<?php ?>" class = "table"></td> <td></td>
+            </tr>
+            <tr>
+                <td id="<?php echo ((int)$_SESSION["position"] + 3)%4; ?>" class = "table"></td> <td></td> <td id="<?php echo ((int)$_SESSION["position"] + 1)%4; ?>" class = "table"></td>
+            </tr>
+            <tr>
+                <td></td> <td id="<?php echo $_SESSION["position"]; ?>" class = "table"></td> <td></td>
+            </tr>
+        </table>
+    </div>
+    <div class = "score_field">
+
+    </div>
     <script>
         function update_hand(){
             $.ajax({
@@ -28,6 +93,17 @@
                 dataType : "json",  
                 success : show   
             });
+        }
+
+        function show(hand){
+            let src = null;
+            let box = null;
+            for (let i = 0; i < hand.length; i++){
+                src = `../app/card_art/${hand[i]}`;
+                box = $(`<div class='box' id = "${i}"></div>`);
+                box.append(`<img src="${src}" class="card">`);
+                $(`#hand`).append(box);
+            }
         }
 
         function clickable(){
@@ -73,9 +149,11 @@
         }
 
         function placeCard(resp){
-            let player = parseInt($("#position").html());
+            let player = parseInt($("#position").html()); // gets player position from invisible div
             disableHand();
-            let box = $(`#${player}`);
+            let box = $(`#${resp.msg}`); // card that was played is in resp.msg
+            box.remove();
+
         }
 
         function updateScore(){
@@ -135,21 +213,20 @@
 
         }
 
-        $(document).ready(main());
-
-        function main(){
-
-        }
-
-        $(window).on("unload", function(){
-            $.ajax({
-                url : "index.php?rt=game/invalidate",
-                data : {},
-                method : "POST",
-                dataType : "json",
-                success : function(resp){
-                    console.log(resp);
-                }
+        $(document).ready(function{
+            update_hand();
+            clickable();
+            callable();
+            $(window).on("unload", function(){
+                $.ajax({
+                    url : "index.php?rt=game/invalidate",
+                    data : {},
+                    method : "POST",
+                    dataType : "json",
+                    success : function(resp){
+                        console.log(resp);
+                    }
+                });
             });
         });
     </script>

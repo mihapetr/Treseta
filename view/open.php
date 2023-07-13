@@ -281,24 +281,20 @@ function disable_hand(i) {
     $(`#c${i}`).hide();
 }
 
-$(document).ready(main());
-
-function main() {
-
+$(document).ready(function(){
     start();    // create an new table in the database
     clickable();    // make cards clickable
     callable();     // button for akužavanje (for now just skips turn)
-}
-
-$(window).on("unload",function(){
-    $.ajax({
-        url : "index.php?rt=game/removePlayers",
-        data : {},
-        method : "POST",
-        dataType : "json",
-        success : function(resp){
-            console.log(resp);
-        }
+    $(window).on("unload",function(){
+        $.ajax({
+            url : "index.php?rt=game/invalidate",
+            data : {},
+            method : "POST",
+            dataType : "json",
+            success : function(resp){
+                console.log(resp);
+            }
+        });
     });
 });
 
