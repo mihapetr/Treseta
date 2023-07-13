@@ -17,7 +17,7 @@
                 url : "index.php?rt=waitingRoom/wait",
                 data : {},
                 method : "POST",
-                dataType : "json"
+                dataType : "json",
                 success : function(resp){
                     console.log(resp);
                 }

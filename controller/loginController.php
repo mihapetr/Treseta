@@ -5,24 +5,18 @@ require_once __DIR__ . "/../model/table.class.php";
 class loginController
 {
     // starts the login process
-    public function index($errorMsg = "")
+    public function index()
     {
-        if ($errorMsg !== "") echo $errorMsg;
         require_once __DIR__ . "/../view/login.php";
     }
 
-    public function anaylzeLogin()
+    public function analyzeLogin()
     {
-        if (!isset($_POST["username"]))
+        if (!isset($_POST["username"]) || !preg_match( "/^[a-zA-Z]{3,20}$/", $_POST["username"]))
         {
-            header ("Location : " . __DIR__ . "/index.php?rt=open");
-            $this -> index("Username not set!");
+            header ("Location : index.php?rt=login");
+            exit();
         }
-
-        if( !preg_match( "/^[a-zA-Z]{3,20}$/", $_POST["username"] ) )
-	    {
-            $this->index("Please enter a name with 3-20 letters.");
-	    }
 
         if (session_id() === "") session_start();
 
@@ -36,6 +30,7 @@ class loginController
         if ($table -> getValid() === false)
         {
             $table = new Table;
+            $table -> setWho($position);
             $table -> save();
         }
 
@@ -46,7 +41,8 @@ class loginController
         }
         catch(Exception $e)
         {
-            $this -> index("Seat taken!");
+            $this -> index();
+            return;
         }
 
         $_SESSION["username"] = $username;
@@ -59,14 +55,14 @@ class loginController
         {
             $table -> endPhase();
             $table -> save();
-            header( "Location: " . __DIR__ . "/index.php?rt=game" );
+            header( "Location: index.php?rt=game" );
             exit();
         }
 
         // if not, go to the waiting room
         else
         {
-            header( "Location: " . __DIR__ . "/index.php?rt=waitingRoom" );
+            header( "Location: index.php?rt=waitingRoom" );
             exit();
         }
         

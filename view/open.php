@@ -287,7 +287,7 @@ $(document).ready(function(){
     callable();     // button for akužavanje (for now just skips turn)
     $(window).on("unload",function(){
         $.ajax({
-            url : "index.php?rt=game/invalidate",
+            url : "index.php?rt=open/invalidate",
             data : {},
             method : "POST",
             dataType : "json",
@@ -302,4 +302,3 @@ $(document).ready(function(){
 
 </body>
 </html>
-

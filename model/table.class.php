@@ -103,6 +103,10 @@ class Table implements JsonSerializable {
         return $this -> who;
     }
 
+    function setWho($int){
+        $this -> who = $int;
+    }
+
     // playing a card
     function played($who, $which) {
 

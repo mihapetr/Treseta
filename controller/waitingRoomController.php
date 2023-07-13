@@ -15,17 +15,16 @@ class waitingRoomController {
 
             // someone already ended the phase, just move the view to game.php
             if ($table -> phase() !== -1){
-                require_once __DIR__ . "/../view/game.php";
+                header( "Location: index.php?rt=game" );
             }
             // all 4 players connected, the game can start
             if ($numberOfPlayers === 4){
                 $table -> endPhase();
                 $table -> save();
-                require_once __DIR__ . "/../view/game.php";
+                header( "Location: index.php?rt=game" );
             }
 
             // need to wait
-            echo "<br>" . $numberOfPlayers . "/4 players connected";
             usleep(1000000);
         }
     }
