@@ -92,19 +92,19 @@ class gameController {
         $player = $_SESSION["username"];
 
         while(true) {
+            if (isset($who)) $whoPrev = $who;
+            else $whoPrev = null;
             $res = $db -> query("
                 select who from State where id = 1;
             ");
             $who = $res -> fetchAll()[0]["who"];
 
+            // check if someone else made the move
+            if ($whoPrev != null && $who != $whoPrev){
+                
+            }
             // request matches the database state
             if($player == $who) {
-                /*$table = Table::load();
-                // if a player needs a new hand
-                $msg = "";
-                if(explode(",", $table -> phase())[0] == "call") {
-                    $msg = "new_hand";
-                }*/
                 echo json_encode(new Message(null, null));
                 break;
             }

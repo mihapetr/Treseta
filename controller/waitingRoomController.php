@@ -9,6 +9,8 @@ class waitingRoomController {
 
     function wait(){
         while (true){
+            // doesnt work?!
+            // phase is 1 and it doesnt leave
             $table = Table::load();
 
             // all 4 players connected, the game can start

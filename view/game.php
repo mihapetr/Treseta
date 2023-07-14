@@ -205,16 +205,17 @@
         }
 
         function enableHand(){
-
+            $(`#hand`).show();
+            $(`#c`).show();
         }
 
         function disableHand(){
-            let i = parseInt($("#position").html());
-
+            // todo make the hand not clickable
+            $(`#c`).hide();
         }
 
         $(document).ready(function(){
-            update_hand();
+            enableHand();
             clickable();
             callable();
             $(window).on("unload", function(){
