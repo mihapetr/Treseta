@@ -87,7 +87,7 @@
     <script>
         function update_hand(){
             $.ajax({
-                url : "test.index.php?rt=game/getHand",
+                url : "index.php?rt=game/getHand",
                 data : {},
                 method : "POST",
                 dataType : "json",  
@@ -114,7 +114,7 @@
                 card_id = this.id;
                 // playing of a card should be reflected in the game state
                 $.ajax({
-                    url : "test.index.php?rt=game/play",
+                    url : "index.php?rt=game/play",
                     data : {
                         played : this.id
                     },
@@ -158,7 +158,7 @@
 
         function updateScore(){
             $.ajax({
-                url : "test.index.php?rt=game/getScores",
+                url : "index.php?rt=game/getScores",
                 data : {},
                 method : "POST",
                 dataType : "json",  
@@ -171,7 +171,7 @@
         function callable(){
             $(".call").on("click", function(){
                 $.ajax({
-                    url : "test.index.php?rt=game/call",
+                    url : "index.php?rt=game/call",
                     data : {
                         player : this.id[1]
                     },  
@@ -191,7 +191,7 @@
 
         function waitTurn(){
             $.ajax({
-                url : "test.index.php?rt=game/await",
+                url : "index.php?rt=game/await",
                 data : {
                     player : i
                 },
@@ -213,7 +213,7 @@
 
         }
 
-        $(document).ready(function{
+        $(document).ready(function(){
             update_hand();
             clickable();
             callable();

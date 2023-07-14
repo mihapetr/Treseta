@@ -19,7 +19,7 @@ class OpenController {
     function index() {
 
         $table = new Table;
-        $table -> setValid(0);
+        $table -> setValid(false);
         // this part should be done by each client when they 
         // enter their name and position
         $table -> acceptPlayer(new Player("Alice", 0));

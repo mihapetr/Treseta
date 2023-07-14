@@ -10,9 +10,7 @@
     Waiting for all 4 players.
     <br>
     <script>
-        $(document).ready(loop());
-
-        function loop(){
+        $(document).ready(function(){
             $.ajax({
                 url : "index.php?rt=waitingRoom/wait",
                 data : {},
@@ -22,7 +20,7 @@
                     console.log(resp);
                 }
             });
-        }
+        });
     </script>
 </body>
 </html>
