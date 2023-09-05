@@ -48,6 +48,7 @@ class Table implements JsonSerializable {
         $this -> valid = true;
         $this -> phase = -1;    // represents the seating phase
         // if a phase is ended after all players are seated, cards will be dealt
+        $this -> who = -1; // doesn't matter
     }
 
     // encodes protected values
@@ -233,30 +234,35 @@ class Table implements JsonSerializable {
 
     // saves the Table object to the database;
     // for now there is only one row with id = 1
-    function save() {
+    function save($game_number) {
 
         $db = DB::getConnection();
 
         // firstly who table atribute has to be set to -1 to prevent the server
         // from triggering the long polling condition from the same client;
         // encoding and saving objects takes more time than tinyint
-        $db -> query("
+        $res = $db -> prepare("
             update State
             set who = -1
-            where id = 1;
+            where id = :id;
         ");
+
+        $res -> execute(array(
+            "id" => $game_number
+        ));
         // now noone's request for playing turn can be handled because
         // "who" in db has to match client position
 
         $st = $db -> prepare("
             update State
             set who = :who, object = :object
-            where id = 1;
+            where id = :id;
         ");
-
+        
         $st -> execute(array(
             "who" => $this -> who(),
-            "object" => json_encode($this)
+            "object" => json_encode($this),
+            "id" => $game_number
         ));
 
         ///////////// DEBUG //////////////
@@ -265,13 +271,17 @@ class Table implements JsonSerializable {
     }
 
     // load object from database
-    public static function load() {
+    public static function load($game_number) {
 
         $db = DB::getConnection();
 
-        $res = $db -> query("
-            select object from State where id = 1;
+        $res = $db -> prepare("
+            select object from State where id = :id;
         ");
+
+        $res -> execute(array(
+            "id" => $game_number
+        ));
 
         $json = $res -> fetchAll()[0]["object"];
         

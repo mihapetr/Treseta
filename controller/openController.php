@@ -29,7 +29,7 @@ class OpenController {
         // seating phase has ended
         $table -> endPhase();
         // save the game state
-        $table -> save();
+        $table -> save(1);
 
         $msg = sprintf("started game, phase: %s, player: %s", $table -> phase(), $table -> who());
         echo json_encode(new Message(null, $msg));
@@ -38,7 +38,7 @@ class OpenController {
     // returns card images each player has in their hand
     function getHands() {
 
-        $table = Table::load();
+        $table = Table::load(1);
         $hands = [];
         foreach ($table -> players() as $key => $player) {
             $images = [];
@@ -54,7 +54,7 @@ class OpenController {
     // when a player plays a card
     function play() {
 
-        $table = Table::load();
+        $table = Table::load(1);
         $player = $_POST["played"][0];  // first char in card box id
         $card = $_POST["played"][1];    // second char in card box id
 
@@ -66,7 +66,7 @@ class OpenController {
         if(explode(",", $table -> phase())[0] == "call") {
             $deed = $physicalPlayer -> call() -> add_or_remove($physicalCard);
             // $deed is "removed" or "added" 
-            $table -> save();   
+            $table -> save(1);   
             echo json_encode(new Message($deed[1], $deed[0]));
             exit(0);
         }
@@ -79,7 +79,7 @@ class OpenController {
 
         $table -> played($player, $card);
         $table -> endPhase();
-        $table -> save();
+        $table -> save(1);
         $msg = $player . $card;
         if($table -> pool -> isEmpty()) {
             $msg .= "c";    // collect the pool on the client
@@ -93,7 +93,7 @@ class OpenController {
     // akužavanje
     function call() {
 
-        $table = Table::load();
+        $table = Table::load(1);
         // show cards to other players
 
         if(explode(",", $table -> phase())[0] != "call") {
@@ -107,7 +107,7 @@ class OpenController {
         $val = $table -> players()[$player] -> call() -> evaluate();   // Call::$value now has value
 
         $table -> endPhase();
-        $table -> save();
+        $table -> save(1);
         $msg = "called";
         echo json_encode(new Message($val, $msg));
     }
@@ -141,14 +141,14 @@ class OpenController {
 
     function getScores() {
 
-        $table = Table::load();
+        $table = Table::load(1);
         echo json_encode($table -> scores());
     }
 
     function invalidate(){
-        $table = Table::load();
+        $table = Table::load(1);
         $table -> setValid(false);
-        $table -> save();
+        $table -> save(1);
         session_unset();
         session_destroy();
     }
