@@ -1,5 +1,7 @@
 <?php 
 
+session_start();
+
 // Provjeri je li postavljena varijabla rt; kopiraj ju u $route
 if( isset( $_GET['rt'] ) )
 	$route = $_GET['rt'];

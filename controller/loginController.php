@@ -17,8 +17,6 @@ class loginController
             header ("Location : index.php?rt=login");
             exit();
         }
-        
-        session_start();
 
         $_SESSION["username"] = $_POST["username"];
 

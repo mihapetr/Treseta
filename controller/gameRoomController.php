@@ -16,14 +16,13 @@ class gameRoomController {
 
         $table = Table::load($roomNumber);
 
-        $table -> acceptPlayer($username, $roomNumber);
+        $table -> acceptPlayer(new Player($username, $roomNumber));
 
         $table -> save($roomNumber);
 
         // now that a player is added to a room, he should wait in the gameRoom until all 4 players are added
 
         require_once __DIR__ . "/../serverCalls/waitForGame.php";
-        exit();
     }
 };
 
