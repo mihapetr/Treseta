@@ -21,8 +21,7 @@ class gameController {
 
     function getHand(){
         $position = (int) $_SESSION["position"];
-        $roomNumber =(int) $_SESSION["roomNumber"];
-        $table = Table::load($roomNumber);
+        $table = Table::load();
         $hand = [];
         $player = $table -> players()[$position]; // gets the Player from the table
         foreach ($player -> hand() -> cards() as $key => $card){
@@ -33,8 +32,7 @@ class gameController {
     }
 
     function play(){
-        $roomNumber =(int) $_SESSION["roomNumber"];
-        $table = Table::load($roomNumber);
+        $table = Table::load();
         $player = $_SESSION["username"];
         $card = $_POST["played"];
 
@@ -46,7 +44,7 @@ class gameController {
         if(explode(",", $table -> phase())[0] == "call") {
             $deed = $physicalPlayer -> call() -> add_or_remove($physicalCard);
             // $deed is "removed" or "added" 
-            $table -> save($roomNumber);   
+            $table -> save();   
             echo json_encode(new Message($deed[1], $deed[0]));
             exit(0);
         }
@@ -59,7 +57,7 @@ class gameController {
 
         $table -> played($player, $card);
         $table -> endPhase();
-        $table -> save($roomNumber);
+        $table -> save();
         $msg = $card;
         if($table -> pool -> isEmpty()) {
             $msg .= "c";    // collect the pool on the client
@@ -71,8 +69,7 @@ class gameController {
     }
 
     function call(){
-        $roomNumber =(int) $_SESSION["roomNumber"];
-        $table = Table::load($roomNumber);
+        $table = Table::load();
         // show cards to other players
 
         if(explode(",", $table -> phase())[0] != "call") {
@@ -85,7 +82,7 @@ class gameController {
 
         $val = $table -> players()[$player] -> call() -> evaluate();   // Call::$value now has value
         $table -> endPhase();
-        $table -> save($roomNumber);
+        $table -> save();
         $msg = "called";
         echo json_encode(new Message($val, $msg));
     }
@@ -116,16 +113,14 @@ class gameController {
     }
 
     function getScores(){
-        $roomNumber =(int) $_SESSION["roomNumber"];
-        $table = Table::load($roomNumber);
+        $table = Table::load();
         echo json_encode($table -> scores());
     }
 
     function invalidate(){
-        $roomNumber =(int) $_SESSION["roomNumber"];
-        $table = Table::load($roomNumber);
+        $table = Table::load();
         $table -> setValid(false);
-        $table -> save($roomNumber);
+        $table -> save();
         session_unset();
         session_destroy();
     }
