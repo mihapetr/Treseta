@@ -21,7 +21,7 @@ class gameController {
 
     function getHand(){
         $position = (int) $_SESSION["position"];
-        $table = Table::load();
+        $table = Table::load((int) $_SESSION ["roomNumber"]);
         $hand = [];
         $player = $table -> players()[$position]; // gets the Player from the table
         foreach ($player -> hand() -> cards() as $key => $card){
@@ -32,7 +32,7 @@ class gameController {
     }
 
     function play(){
-        $table = Table::load();
+        $table = Table::load((int) $_SESSION ["roomNumber"]);
         $player = $_SESSION["username"];
         $card = $_POST["played"];
 
@@ -44,7 +44,7 @@ class gameController {
         if(explode(",", $table -> phase())[0] == "call") {
             $deed = $physicalPlayer -> call() -> add_or_remove($physicalCard);
             // $deed is "removed" or "added" 
-            $table -> save();   
+            $table -> save((int) $_SESSION ["roomNumber"]);   
             echo json_encode(new Message($deed[1], $deed[0]));
             exit(0);
         }
@@ -57,7 +57,7 @@ class gameController {
 
         $table -> played($player, $card);
         $table -> endPhase();
-        $table -> save();
+        $table -> save((int) $_SESSION ["roomNumber"]);
         $msg = $card;
         if($table -> pool -> isEmpty()) {
             $msg .= "c";    // collect the pool on the client
@@ -69,7 +69,7 @@ class gameController {
     }
 
     function call(){
-        $table = Table::load();
+        $table = Table::load((int) $_SESSION ["roomNumber"]);
         // show cards to other players
 
         if(explode(",", $table -> phase())[0] != "call") {
@@ -82,7 +82,7 @@ class gameController {
 
         $val = $table -> players()[$player] -> call() -> evaluate();   // Call::$value now has value
         $table -> endPhase();
-        $table -> save();
+        $table -> save((int) $_SESSION ["roomNumber"]);
         $msg = "called";
         echo json_encode(new Message($val, $msg));
     }
@@ -113,14 +113,14 @@ class gameController {
     }
 
     function getScores(){
-        $table = Table::load();
+        $table = Table::load((int) $_SESSION ["roomNumber"]);
         echo json_encode($table -> scores());
     }
 
     function invalidate(){
-        $table = Table::load();
+        $table = Table::load((int) $_SESSION ["roomNumber"]);
         $table -> setValid(false);
-        $table -> save();
+        $table -> save((int) $_SESSION ["roomNumber"]);
         session_unset();
         session_destroy();
     }
