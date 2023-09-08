@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 require_once __DIR__ . "/../model/table.class.php";
 
 class gameRoomController {
@@ -15,6 +17,8 @@ class gameRoomController {
         $username = $_SESSION["username"];
 
         $table = Table::load($roomNumber);
+
+        if ($table -> getValid() === false) $table = new Table;
 
         $table -> acceptPlayer(new Player($username, $roomNumber));
 

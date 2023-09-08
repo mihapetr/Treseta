@@ -8,6 +8,10 @@
 
 </head>
 <body>
+    <?php
+        $table = Table::load(3);
+        echo ($table -> players()[2] -> name());
+    ?>
     <form action="index.php?rt=login/analyzeLogin" method="post">
         Unesite korisničko ime:
         <!--Welcome, game rules ...-->

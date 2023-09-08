@@ -7,10 +7,13 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.js"></script>
 </head>
 <body>
-    <!-- Choose a room ... (should disable full rooms, also add a player counter next to the button)-->
+    Choose a room ... (should disable full rooms, also add a player counter next to the button)
     <br>
     <form action="index.php?rt=lobby/enterRoom" method="post">
-        <button type="submit" name="roomNumber" value="1">1.</button>
+        <button type="submit" name="roomNumber" value="1" <?php 
+            $table = Table::load($_SESSION["roomNumber"]);
+            if (count($table -> players()) === 4 && )
+        ?>>1.</button>
         <br>
         <button type="submit" name="roomNumber" value="2">2.</button>
         <br>

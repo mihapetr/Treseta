@@ -18,6 +18,7 @@ class Table implements JsonSerializable {
     public $pool;        // a Pool object   
     protected $who;         // whose turn it is to play 
     protected $valid;       // tracks if a player leaves the game
+    public $updatedPool; // change to be a list of bools
 
     public static function getPhases() {
 
@@ -49,6 +50,7 @@ class Table implements JsonSerializable {
         $this -> phase = -1;    // represents the seating phase
         // if a phase is ended after all players are seated, cards will be dealt
         $this -> who = -1; // doesn't matter
+        $updatedPool = [false, false, false, false];
     }
 
     // encodes protected values

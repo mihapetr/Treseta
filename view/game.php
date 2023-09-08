@@ -66,7 +66,8 @@
     </style>
 </head>
 <body>
-    <div id="position" style="display : none;"><?php echo (int)$_SESSION["position"]; ?></div>
+    <div id="position" style="display : none;"><?php echo (int) $_SESSION["position"]; ?></div>
+    <div id="roomNumber" style="display : none;"><?php echo (int) $_SESSION["roomNumber"]; ?></div>
     <div class="playing_field">
         <div id="hand"></div><button id="c" class = "call">CALL</button>
         <table id="pool" class = "center">
@@ -87,11 +88,14 @@
     <script>
         function update_hand(){
             $.ajax({
-                url : "index.php?rt=game/getHand",
-                data : {},
+                url : "../index.php?rt=game/getHand",
+                data : {
+                    position : $("#positioin").html(),
+                    roomNumber : $("#roomNumber").html()
+                },
                 method : "POST",
                 dataType : "json",  
-                success : show   
+                success : show
             });
         }
 
@@ -114,9 +118,11 @@
                 card_id = this.id;
                 // playing of a card should be reflected in the game state
                 $.ajax({
-                    url : "index.php?rt=game/play",
+                    url : "../index.php?rt=game/play",
                     data : {
-                        played : this.id
+                        played : this.id,
+                        position : $("#positioin").html(),
+                        roomNumber : $("#roomNumber").html()
                     },
                     method : "POST",
                     dataType : "json",  
@@ -149,17 +155,39 @@
         }
 
         function placeCard(resp){
-            let player = parseInt($("#position").html()); // gets player position from invisible div
-            disableHand();
-            let box = $(`#${resp.msg}`); // card that was played is in resp.msg
-            box.remove();
+            // let player = parseInt($("#position").html()); // gets player position from invisible div
+            // disableHand();
+            // let box = $(`#${resp.msg}`); // card that was played is in resp.msg
+            // box.remove();
+
+            $.ajax({
+                url: "../index.php?rt=game/updatePool",
+                data: {
+                    roomNumber : $("#roomNumber").html()
+                },
+                method: "POST",
+                dataType: "json",
+                success : function(resp){
+                    console.log(resp.msg);
+                    // treba jos
+                }
+            });
+
+            $.ajax({
+                url: "../index.php?rt=game/updatePool",
+                data: {},
+                method: "POST",
+                dataType: "json"
+            });
 
         }
 
         function updateScore(){
             $.ajax({
-                url : "index.php?rt=game/getScores",
-                data : {},
+                url : "../index.php?rt=game/getScores",
+                data : {
+                    roomNumber : $("#roomNumber").html()
+                },
                 method : "POST",
                 dataType : "json",  
                 success : function(resp) {
@@ -171,9 +199,11 @@
         function callable(){
             $(".call").on("click", function(){
                 $.ajax({
-                    url : "index.php?rt=game/call",
+                    url : "../index.php?rt=game/call",
                     data : {
                         player : this.id[1]
+                        roomNumber : $("#roomNumber").html(),
+                        position : $("#position").html()
                     },  
                     method : "POST",
                     dataType : "json",  
@@ -189,17 +219,17 @@
             });
         }
 
-        function waitTurn(){
+        function waitTurn(i){
             $.ajax({
-                url : "index.php?rt=game/await",
+                url : "../index.php?rt=game/await",
                 data : {
-                    player : i
+                    position : i
                 },
                 method : "POST",
                 dataType : "json",  
                 success : function(resp) {
                     console.log(`enabled hand ${i}`);
-                    enable_hand(i);
+                    enable_hand();
                 }  
             });
         }
@@ -214,14 +244,33 @@
             $(`#c`).hide();
         }
 
+        function start() {
+            update_hand();  // gets hand cards from server
+            disableHand();  // makes hand not clickable
+            console.log($(`#position`).html());
+            waitTurn($(`#position`).html());     // requestss server to notify about their turn
+            
+            $.ajax({
+                url: "../index.php?rt=game/waitOthers",
+                data: {
+                    roomNumber : $("#roomNumber").html(),
+                    position : $("#position").html()
+                },
+                method: "POST",
+                dataType: "json"
+            });
+        }
+
         $(document).ready(function(){
-            enableHand();
+            start();
             clickable();
             callable();
             $(window).on("unload", function(){
                 $.ajax({
-                    url : "index.php?rt=game/invalidate",
-                    data : {},
+                    url : "../index.php?rt=game/invalidate",
+                    data : {
+                        roomNumber : $("#roomNumber").html()
+                    },
                     method : "POST",
                     dataType : "json",
                     success : function(resp){

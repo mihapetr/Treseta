@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 require_once __DIR__ . "/../model/table.class.php";
 
 // sending messages to the client
@@ -20,8 +22,8 @@ class gameController {
     }
 
     function getHand(){
-        $position = (int) $_SESSION["position"];
-        $table = Table::load((int) $_SESSION ["roomNumber"]);
+        $position = (int) $_POST["position"];
+        $table = Table::load((int) $_POST ["roomNumber"]);
         $hand = [];
         $player = $table -> players()[$position]; // gets the Player from the table
         foreach ($player -> hand() -> cards() as $key => $card){
@@ -32,8 +34,9 @@ class gameController {
     }
 
     function play(){
-        $table = Table::load((int) $_SESSION ["roomNumber"]);
-        $player = $_SESSION["username"];
+        $roomNumber =(int) $_POST["roomNumber"];
+        $table = Table::load($roomNumber);
+        $player =(int) $_POST["position"];
         $card = $_POST["played"];
 
         // create objects
@@ -44,7 +47,7 @@ class gameController {
         if(explode(",", $table -> phase())[0] == "call") {
             $deed = $physicalPlayer -> call() -> add_or_remove($physicalCard);
             // $deed is "removed" or "added" 
-            $table -> save((int) $_SESSION ["roomNumber"]);   
+            $table -> save($roomNumber);   
             echo json_encode(new Message($deed[1], $deed[0]));
             exit(0);
         }
@@ -57,7 +60,7 @@ class gameController {
 
         $table -> played($player, $card);
         $table -> endPhase();
-        $table -> save((int) $_SESSION ["roomNumber"]);
+        $table -> save($roomNumber);
         $msg = $card;
         if($table -> pool -> isEmpty()) {
             $msg .= "c";    // collect the pool on the client
@@ -69,7 +72,8 @@ class gameController {
     }
 
     function call(){
-        $table = Table::load((int) $_SESSION ["roomNumber"]);
+        $roomNumber =(int) $_POST["roomNumber"];
+        $table = Table::load($roomNumber);
         // show cards to other players
 
         if(explode(",", $table -> phase())[0] != "call") {
@@ -78,18 +82,18 @@ class gameController {
             exit(1);
         }
 
-        $player = $_SESSION["username"];
+        $position = $_POST["position"];
 
         $val = $table -> players()[$player] -> call() -> evaluate();   // Call::$value now has value
         $table -> endPhase();
-        $table -> save((int) $_SESSION ["roomNumber"]);
+        $table -> save($roomNumber);
         $msg = "called";
         echo json_encode(new Message($val, $msg));
     }
 
     function await(){
         $db = DB::getConnection();
-        $player = $_SESSION["username"];
+        $player = $_POST["position"];
 
         while(true) {
             if (isset($who)) $whoPrev = $who;
@@ -112,15 +116,42 @@ class gameController {
         }
     }
 
+    function waitOthers(){
+        $roomNumber =(int) $_POST["roomNumber"];
+        $position =(int) $_POST["position"];
+        while(1){
+            $table = Table::load($roomNumber);
+            if ($table -> $updatedPool[$position] === true){
+                $table -> $updatedPool[$position] === false;
+
+                $table -> save($roomNumber);
+
+                echo json_encode($table -> $pool);
+            }
+                
+            usleep(100000);
+        }
+        
+    }
+
+    function updatePool(){
+        $roomNumber =(int) $_POST["roomNumber"];
+        $table = Table::load($roomNumber);
+        $table -> $updatedPool = [true, true, true, true];
+
+        $table -> save($roomNumber);
+    }
+
     function getScores(){
-        $table = Table::load((int) $_SESSION ["roomNumber"]);
+        $table = Table::load((int) $_POST ["roomNumber"]);
         echo json_encode($table -> scores());
     }
 
     function invalidate(){
-        $table = Table::load((int) $_SESSION ["roomNumber"]);
+        $roomNumber =(int) $_POST["roomNumber"];
+        $table = Table::load($roomNumber);
         $table -> setValid(false);
-        $table -> save((int) $_SESSION ["roomNumber"]);
+        $table -> save($roomNumber);
         session_unset();
         session_destroy();
     }

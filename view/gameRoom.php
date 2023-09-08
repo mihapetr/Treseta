@@ -7,7 +7,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.js"></script>
 </head>
 <body>
-    <!-- Choose a position -->
+    Choose a position
     <form action="index.php?rt=gameRoom/addPlayer" method="post">
     <button type="submit" name="position" value="0">1.</button>
     <br>
