@@ -66,7 +66,7 @@
     </style>
 </head>
 <body>
-    <div id="position" style="display : none;"><?php echo ((int)$_SESSION["position"] + 2)%4; ?></div>
+    <div id="position" style="display : none;"><?php echo (int)$_SESSION["position"]; ?></div>
     <div class="playing_field">
         <div id="hand"></div><button id="c" class = "call">CALL</button>
         <table id="pool" class = "center">
