@@ -174,7 +174,7 @@
             });
 
             $.ajax({
-                url: "../index.php?rt=game/updatePool",
+                url: "../index.php?rt=game/waitOthers",
                 data: {},
                 method: "POST",
                 dataType: "json"

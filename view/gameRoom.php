@@ -9,13 +9,41 @@
 <body>
     Choose a position
     <form action="index.php?rt=gameRoom/addPlayer" method="post">
-    <button type="submit" name="position" value="0">1.</button>
+    <button type="submit" name="position" value="0" <?php
+        $roomNumber = $_SESSION["roomNumber"];
+        $table = Table::load($roomNumber);
+        foreach ($table -> players() as $player){
+            if ($player -> position() == 0) echo "disabled";
+        }
+    ?>
+    >1.</button>
     <br>
-    <button type="submit" name="position" value="1">2.</button>
+    <button type="submit" name="position" value="1" <?php
+        $roomNumber = $_SESSION["roomNumber"];
+        $table = Table::load($roomNumber);
+        foreach ($table -> players() as $player){
+            if ($player -> position() == 1) echo "disabled";
+        }
+    ?>
+    >2.</button>
     <br>
-    <button type="submit" name="position" value="2">3.</button>
+    <button type="submit" name="position" value="2" <?php
+        $roomNumber = $_SESSION["roomNumber"];
+        $table = Table::load($roomNumber);
+        foreach ($table -> players() as $player){
+            if ($player -> position() == 2) echo "disabled";
+        }
+    ?>
+    >3.</button>
     <br>
-    <button type="submit" name="position" value="3">4.</button>
+    <button type="submit" name="position" value="3" <?php
+        $roomNumber = $_SESSION["roomNumber"];
+        $table = Table::load($roomNumber);
+        foreach ($table -> players() as $player){
+            if ($player -> position() == 3) echo "disabled";
+        }
+    ?>
+    >4.</button>
     </form>
 </body>
 </html>

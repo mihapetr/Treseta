@@ -20,7 +20,7 @@ class gameRoomController {
 
         if ($table -> getValid() === false) $table = new Table;
 
-        $table -> acceptPlayer(new Player($username, $roomNumber));
+        $table -> acceptPlayer(new Player($username, (int) $_SESSION["position"]));
 
         if (count($table -> players()) === 4) $table -> endPhase();
         // last one that joins ends the seating phase

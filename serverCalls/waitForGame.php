@@ -13,7 +13,7 @@ while (1){
         exit();
     }
 
-    usleep ( 300000 );
+    usleep (100000);
 }
 
 ?>

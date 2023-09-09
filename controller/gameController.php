@@ -72,9 +72,8 @@ class gameController {
     }
 
     function call(){
-        $roomNumber =(int) $_POST["roomNumber"];
+        $roomNumber = (int) $_POST["roomNumber"];
         $table = Table::load($roomNumber);
-        // show cards to other players
 
         if(explode(",", $table -> phase())[0] != "call") {
             $msg = "wrong_action";
