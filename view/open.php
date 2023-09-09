@@ -122,7 +122,7 @@ function update_hands() {
 // display every hand
 function show(hands) {
 
-    //console.log(hands);
+    console.log(hands);
     let src = null;
     let box = null;
     for (let i = 0; i < hands.length; i++) {

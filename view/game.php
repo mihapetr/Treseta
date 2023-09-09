@@ -95,9 +95,7 @@
             </tr>
         </table>
     </div>
-    <div class = "score_field">
-
-    </div>
+    <div class = "score_field"></div>
     <script>
         function update_hand(){
             $.ajax({
@@ -169,12 +167,6 @@
         }
 
         function placeCard(resp){
-            // let player = parseInt($("#position").html()); // gets player position from invisible div
-            // disableHand();
-            // let box = $(`#${resp.msg}`); // card that was played is in resp.msg
-            // box.remove();
-
-            // says that a card is played to all players
             $.ajax({
                 url: "../index.php?rt=game/updatePool",
                 data: {
@@ -272,7 +264,6 @@
 
         $(document).ready(function(){
             start();
-            clickable();
             callable();
             $(window).on("unload", function(){
                 $.ajax({
