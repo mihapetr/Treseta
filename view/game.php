@@ -79,13 +79,13 @@
         <div id="hand" class="hand"></div><button id="c" class = "call">CALL</button>
         <table id="pool" class = "center">
             <tr>
-                <td></td> <td id="<?php echo ((int) $_SESSION["position"] + 2) % 4; ?>" class = "table"></td> <td></td>
+                <td></td> <td id="<?php echo "t" . ((int) $_SESSION["position"] + 2) % 4; ?>" class = "table"></td> <td></td>
             </tr>
             <tr>
-                <td id="<?php echo ((int)$_SESSION["position"] + 3) % 4; ?>" class = "table"></td> <td></td> <td id="<?php echo ((int)$_SESSION["position"] + 1) % 4; ?>" class = "table"></td>
+                <td id="<?php echo "t" . ((int)$_SESSION["position"] + 3) % 4; ?>" class = "table"></td> <td></td> <td id="<?php echo "t" . ((int)$_SESSION["position"] + 1) % 4; ?>" class = "table"></td>
             </tr>
             <tr>
-                <td></td> <td id="<?php echo $_SESSION["position"]; ?>" class = "table"></td> <td></td>
+                <td></td> <td id="<?php echo "t" . $_SESSION["position"]; ?>" class = "table"></td> <td></td>
             </tr>
         </table>
     </div>
@@ -171,7 +171,9 @@
             $.ajax({
                 url: "../index.php?rt=game/updatePool",
                 data: {
-                    roomNumber : $("#roomNumber").html()
+                    roomNumber : $("#roomNumber").html(),
+                    position : $("#position").html(),
+                    card : resp.msg
                 },
                 method: "POST",
                 dataType: "json",

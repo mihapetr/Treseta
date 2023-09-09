@@ -46,7 +46,7 @@ class gameController {
         // player is adding or removing cards from the call
         if(explode(",", $table -> phase())[0] == "call") {
             $deed = $physicalPlayer -> call() -> add_or_remove($physicalCard);
-            // $deed is "removed" or "added" 
+            // $deed[0] is "removed" or "added" 
             $table -> save($roomNumber);   
             echo json_encode(new Message($deed[1], $deed[0]));
             exit(0);
@@ -108,10 +108,6 @@ class gameController {
 
             $who = $res -> fetchAll()[0]["who"];
 
-            // check if someone else made the move
-            if ($whoPrev != null && $who != $whoPrev){
-                
-            }
             // request matches the database state
             if($player == $who) {
                 echo json_encode(new Message(null, null));
@@ -141,8 +137,11 @@ class gameController {
 
     function updatePool(){
         $roomNumber =(int) $_POST["roomNumber"];
+        $position = (int) $_POST["position"];
+        $card = (int) $_POST["card"];
         $table = Table::load($roomNumber);
         $table -> $updatedPool = [true, true, true, true];
+        
 
         $table -> save($roomNumber);
     }
