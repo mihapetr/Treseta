@@ -93,13 +93,19 @@ class gameController {
     function await(){
         $db = DB::getConnection();
         $player = $_POST["position"];
+        $roomNumber = $_POST["roomNumber"];
 
         while(true) {
             if (isset($who)) $whoPrev = $who;
             else $whoPrev = null;
-            $res = $db -> query("
-                select who from State where id = 1;
+            $res = $db -> prepare("
+                select who from State where id = :id;
             ");
+
+            $res -> execute (array(
+                "id" => $roomNumber
+            ));
+
             $who = $res -> fetchAll()[0]["who"];
 
             // check if someone else made the move

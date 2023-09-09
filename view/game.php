@@ -52,7 +52,14 @@
             margin-right: -50%;
             transform: translate(-50%, -50%);
         }
-        #hand {
+        td {
+            border-radius : 10 px;
+            border : 1px solid black;
+            height : 200px;
+            width : 110px;
+        }
+
+        .hand {
             text-align : center;
             position : absolute;
             bottom : -140px;
@@ -69,13 +76,13 @@
     <div id="position" style="display : none;"><?php echo (int) $_SESSION["position"]; ?></div>
     <div id="roomNumber" style="display : none;"><?php echo (int) $_SESSION["roomNumber"]; ?></div>
     <div class="playing_field">
-        <div id="hand"></div><button id="c" class = "call">CALL</button>
+        <div id="hand" class="hand"></div><button id="c" class = "call">CALL</button>
         <table id="pool" class = "center">
             <tr>
-                <td></td> <td id="<?php ?>" class = "table"></td> <td></td>
+                <td></td> <td id="<?php echo ((int) $_SESSION["position"] + 2) % 4; ?>" class = "table"></td> <td></td>
             </tr>
             <tr>
-                <td id="<?php echo ((int)$_SESSION["position"] + 3)%4; ?>" class = "table"></td> <td></td> <td id="<?php echo ((int)$_SESSION["position"] + 1)%4; ?>" class = "table"></td>
+                <td id="<?php echo ((int)$_SESSION["position"] + 3) % 4; ?>" class = "table"></td> <td></td> <td id="<?php echo ((int)$_SESSION["position"] + 1) % 4; ?>" class = "table"></td>
             </tr>
             <tr>
                 <td></td> <td id="<?php echo $_SESSION["position"]; ?>" class = "table"></td> <td></td>
@@ -160,6 +167,7 @@
             // let box = $(`#${resp.msg}`); // card that was played is in resp.msg
             // box.remove();
 
+            // says that a card is played to all players
             $.ajax({
                 url: "../index.php?rt=game/updatePool",
                 data: {
@@ -201,7 +209,7 @@
                 $.ajax({
                     url : "../index.php?rt=game/call",
                     data : {
-                        player : this.id[1]
+                        player : this.id[1],
                         roomNumber : $("#roomNumber").html(),
                         position : $("#position").html()
                     },  
@@ -223,7 +231,8 @@
             $.ajax({
                 url : "../index.php?rt=game/await",
                 data : {
-                    position : i
+                    position : i,
+                    roomNumber : $("#roomNumber").html()
                 },
                 method : "POST",
                 dataType : "json",  
@@ -248,7 +257,7 @@
             update_hand();  // gets hand cards from server
             disableHand();  // makes hand not clickable
             console.log($(`#position`).html());
-            waitTurn($(`#position`).html());     // requestss server to notify about their turn
+            waitTurn($(`#position`).html());     // requests server to notify about their turn
             
             $.ajax({
                 url: "../index.php?rt=game/waitOthers",
