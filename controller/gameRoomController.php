@@ -20,6 +20,8 @@ class gameRoomController {
 
         if ($table -> getValid() === false) $table = new Table;
 
+        echo $_SESSION["position"];
+
         $table -> acceptPlayer(new Player($username, (int) $_SESSION["position"]));
 
         if (count($table -> players()) === 4) $table -> endPhase();

@@ -115,7 +115,7 @@ function update_hands() {
         data : {},
         method : "POST",
         dataType : "json",  
-        success : show   
+        success : show
     });
 }
 

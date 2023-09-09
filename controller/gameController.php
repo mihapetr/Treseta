@@ -25,12 +25,17 @@ class gameController {
         $position = (int) $_POST["position"];
         $table = Table::load((int) $_POST ["roomNumber"]);
         $hand = [];
-        $player = $table -> players()[$position]; // gets the Player from the table
-        foreach ($player -> hand() -> cards() as $key => $card){
-            $hand[] = $card -> img();
+        // $player = $table -> players()[$position]; // gets the Player from the table
+        foreach ($table -> players() as $key => $player){
+            if ($player -> position == $position){
+                foreach ($player -> hand() -> cards() as $key => $card){
+                    $hand[] = $card -> img();
+                }
+                break;
+            }
         }
+        
         echo json_encode($hand);
-
     }
 
     function play(){
@@ -137,11 +142,8 @@ class gameController {
 
     function updatePool(){
         $roomNumber =(int) $_POST["roomNumber"];
-        $position = (int) $_POST["position"];
-        $card = (int) $_POST["card"];
         $table = Table::load($roomNumber);
         $table -> $updatedPool = [true, true, true, true];
-        
 
         $table -> save($roomNumber);
     }
@@ -158,6 +160,7 @@ class gameController {
         $table -> save($roomNumber);
         session_unset();
         session_destroy();
+        exit(0);
     }
 };
 

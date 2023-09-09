@@ -2,6 +2,11 @@
 
 session_start();
 
+session_unset();
+session_destroy();
+
+session_start();
+
 require_once __DIR__ . "/../model/table.class.php";
 
 class loginController

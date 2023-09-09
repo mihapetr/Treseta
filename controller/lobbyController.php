@@ -14,6 +14,13 @@ class lobbyController {
         // n through POST
         $_SESSION["roomNumber"] = $_POST["roomNumber"];
 
+        // empties room if entered an invalid one
+        $table = Table::load($_SESSION["roomNumber"]);
+        if ($table -> getValid() === false){
+            $table = new Table;
+            $table -> save($_SESSION["roomNumber"]);
+        }
+
         header ("Location: index.php?rt=gameRoom");
         exit();
     }

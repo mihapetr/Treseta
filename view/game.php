@@ -31,7 +31,7 @@
         .call{
             position : absolute;
             right : 20%;
-            bottom : 0;
+            bottom : 10px;
         }
         .card {
             border-radius : 10px;
@@ -62,9 +62,14 @@
         .hand {
             text-align : center;
             position : absolute;
-            bottom : -140px;
-            /*border : 1px solid red;*/
-            width : 98vw;
+            left : 50%;
+            bottom : 5px;
+            border : 1px solid red;
+            width : 50vw;
+            height : 120px;
+            overflow : hidden;
+            display: inline-block;
+            transform: translate(-50%, 0%);
         }
         body {
             background-color : lightgreen;
@@ -76,16 +81,17 @@
     <div id="position" style="display : none;"><?php echo (int) $_SESSION["position"]; ?></div>
     <div id="roomNumber" style="display : none;"><?php echo (int) $_SESSION["roomNumber"]; ?></div>
     <div class="playing_field">
-        <div id="hand" class="hand"></div><button id="c" class = "call">CALL</button>
+        <div id="hand" class="hand"></div>
+        <button id="c" class = "call">CALL</button>
         <table id="pool" class = "center">
             <tr>
-                <td></td> <td id="<?php echo "t" . ((int) $_SESSION["position"] + 2) % 4; ?>" class = "table"></td> <td></td>
+                <td></td> <td id="<?php echo "t"; echo ((int) $_SESSION["position"] + 2) % 4; ?>" class = "table"></td> <td></td>
             </tr>
             <tr>
-                <td id="<?php echo "t" . ((int)$_SESSION["position"] + 3) % 4; ?>" class = "table"></td> <td></td> <td id="<?php echo "t" . ((int)$_SESSION["position"] + 1) % 4; ?>" class = "table"></td>
+                <td id="<?php echo "t"; echo ((int)$_SESSION["position"] + 3) % 4; ?>" class = "table"></td> <td></td> <td id="<?php echo "t"; echo ((int)$_SESSION["position"] + 1) % 4; ?>" class = "table"></td>
             </tr>
             <tr>
-                <td></td> <td id="<?php echo "t" . $_SESSION["position"]; ?>" class = "table"></td> <td></td>
+                <td></td> <td id="<?php echo "t"; echo $_SESSION["position"]; ?>" class = "table"></td> <td></td>
             </tr>
         </table>
     </div>
@@ -107,6 +113,7 @@
         }
 
         function show(hand){
+            console.log("dosao do show"); // doesnt log this into console ?!
             let src = null;
             let box = null;
             for (let i = 0; i < hand.length; i++){
@@ -171,9 +178,7 @@
             $.ajax({
                 url: "../index.php?rt=game/updatePool",
                 data: {
-                    roomNumber : $("#roomNumber").html(),
-                    position : $("#position").html(),
-                    card : resp.msg
+                    roomNumber : $("#roomNumber").html()
                 },
                 method: "POST",
                 dataType: "json",
@@ -240,36 +245,29 @@
                 dataType : "json",  
                 success : function(resp) {
                     console.log(`enabled hand ${i}`);
-                    enable_hand();
+                    clickable();
                 }  
             });
         }
 
-        function enableHand(){
-            $(`#hand`).show();
-            $(`#c`).show();
-        }
-
         function disableHand(){
-            // todo make the hand not clickable
-            $(`#c`).hide();
+            $(".hand").off("click");
         }
 
         function start() {
             update_hand();  // gets hand cards from server
             disableHand();  // makes hand not clickable
-            console.log($(`#position`).html());
             waitTurn($(`#position`).html());     // requests server to notify about their turn
             
-            $.ajax({
-                url: "../index.php?rt=game/waitOthers",
-                data: {
-                    roomNumber : $("#roomNumber").html(),
-                    position : $("#position").html()
-                },
-                method: "POST",
-                dataType: "json"
-            });
+            // $.ajax({
+            //     url: "../index.php?rt=game/waitOthers",
+            //     data: {
+            //         roomNumber : $("#roomNumber").html(),
+            //         position : $("#position").html()
+            //     },
+            //     method: "POST",
+            //     dataType: "json"
+            // });
         }
 
         $(document).ready(function(){
@@ -284,9 +282,7 @@
                     },
                     method : "POST",
                     dataType : "json",
-                    success : function(resp){
-                        console.log(resp);
-                    }
+                    async : false
                 });
             });
         });
