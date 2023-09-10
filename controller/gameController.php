@@ -23,7 +23,8 @@ class gameController {
 
     function getHand(){
         $position = (int) $_POST["position"];
-        $table = Table::load((int) $_POST ["roomNumber"]);
+        $roomNumber = (int) $_POST["roomNumber"];
+        $table = Table::load($roomNumber);
         $hand = [];
         // $player = $table -> players()[$position]; // gets the Player from the table
         foreach ($table -> players() as $key => $player){
@@ -78,6 +79,7 @@ class gameController {
 
     function call(){
         $roomNumber = (int) $_POST["roomNumber"];
+        $position = (int) $_POST["position"];
         $table = Table::load($roomNumber);
 
         if(explode(",", $table -> phase())[0] != "call") {
@@ -86,9 +88,7 @@ class gameController {
             exit(1);
         }
 
-        $position = $_POST["position"];
-
-        $val = $table -> players()[$player] -> call() -> evaluate();   // Call::$value now has value
+        $val = $table -> players()[$position] -> call() -> evaluate();   // Call::$value now has value
         $table -> endPhase();
         $table -> save($roomNumber);
         $msg = "called";
@@ -127,12 +127,12 @@ class gameController {
         $position =(int) $_POST["position"];
         while(1){
             $table = Table::load($roomNumber);
-            if ($table -> $updatedPool[$position] === true){
-                $table -> $updatedPool[$position] === false;
+            if ($table -> updatedPool[$position] === true){
+                $table -> updatedPool[$position] === false;
 
                 $table -> save($roomNumber);
 
-                echo json_encode($table -> $pool);
+                echo json_encode($table -> pool);
             }
                 
             usleep(100000);
@@ -143,7 +143,7 @@ class gameController {
     function updatePool(){
         $roomNumber =(int) $_POST["roomNumber"];
         $table = Table::load($roomNumber);
-        $table -> $updatedPool = [true, true, true, true];
+        $table -> updatedPool = [true, true, true, true];
 
         $table -> save($roomNumber);
     }

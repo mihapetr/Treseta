@@ -9,8 +9,7 @@
     <style>
         .box {
             display  : inline-block;
-            width : 80px;
-            height : 300px;
+            height : 200px;
             overflow : hidden;
         }
         .box:hover {
@@ -30,15 +29,25 @@
         }
         .call{
             position : absolute;
-            right : 20%;
-            bottom : 10px;
+            right : 18%;
+            bottom : 20px;
+            background-image: linear-gradient(-180deg, #013220, #320113);
+            border-radius: 6px;
+            color: white;
+            margin-top: 15px;
+            height: 100px;
+            line-height: 40px;
+            text-align: center;
+            width: 5%;
+            border: 0;
+            font-size: 26px;
+            margin-right: 25px;
+            cursor: pointer;
         }
         .card {
             border-radius : 10px;
             border : 1px solid black;
-            height : 300px;
-        }
-        .card:hover {
+            height : 200px;
         }
         .score{
             position : absolute;
@@ -51,22 +60,25 @@
             left: 50%;
             margin-right: -50%;
             transform: translate(-50%, -50%);
+            background-image: url("../app/images/wood.jpg");
+            background-color: #36454F;
+            opacity: 0.9;
+            width: 400px;
         }
         td {
-            border-radius : 10 px;
-            border : 1px solid black;
+            border : 0px;
             height : 200px;
             width : 110px;
         }
 
-        .hand {
+        #hand {
             text-align : center;
             position : absolute;
             left : 50%;
             bottom : 5px;
-            border : 1px solid red;
+            background-color: #36454F;
             width : 50vw;
-            height : 120px;
+            height : 200px;
             overflow : hidden;
             display: inline-block;
             transform: translate(-50%, 0%);
@@ -81,13 +93,13 @@
     <div id="position" style="display : none;"><?php echo (int) $_SESSION["position"]; ?></div>
     <div id="roomNumber" style="display : none;"><?php echo (int) $_SESSION["roomNumber"]; ?></div>
     <div class="playing_field">
-        <div id="hand" class="hand"></div>
+        <div id="hand" class="hand"></div><button id="c" class="call">AKUŽAJ</button>
         <table id="pool" class = "center">
             <tr>
                 <td></td> <td id="<?php echo "t"; echo ((int) $_SESSION["position"] + 2) % 4; ?>" class = "table"></td> <td></td>
             </tr>
             <tr>
-                <td id="<?php echo "t"; echo ((int)$_SESSION["position"] + 3) % 4; ?>" class = "table"></td> <td></td> <td id="<?php echo "t"; echo ((int)$_SESSION["position"] + 1) % 4; ?>" class = "table"></td>
+                <td id="<?php echo "t"; echo ((int)$_SESSION["position"] + 1) % 4; ?>" class = "table"></td> <td></td> <td id="<?php echo "t"; echo ((int)$_SESSION["position"] + 3) % 4; ?>" class = "table"></td>
             </tr>
             <tr>
                 <td></td> <td id="<?php echo "t"; echo $_SESSION["position"]; ?>" class = "table"></td> <td></td>
@@ -100,17 +112,19 @@
             $.ajax({
                 url : "../index.php?rt=game/getHand",
                 data : {
-                    position : $("#positioin").html(),
+                    position : $("#position").html(),
                     roomNumber : $("#roomNumber").html()
                 },
                 method : "POST",
                 dataType : "json",  
-                success : show
+                success : function(resp){
+                    show(resp);
+                    console.log("success_hand");
+                }
             });
         }
 
         function show(hand){
-            console.log("dosao do show"); // doesnt log this into console ?!
             let src = null;
             let box = null;
             for (let i = 0; i < hand.length; i++){
@@ -119,12 +133,13 @@
                 box.append(`<img src="${src}" class="card">`);
                 $(`#hand`).append(box);
             }
+            console.log("show");
         }
 
         function clickable(){
             card_id = null;
 
-            $(".hand").on("click", ".box", function() {
+            $("#hand").on("click", ".box", function() {
                 console.log(`clicked: ${this.id}`);
                 card_id = this.id;
                 // playing of a card should be reflected in the game state
@@ -132,7 +147,7 @@
                     url : "../index.php?rt=game/play",
                     data : {
                         played : this.id,
-                        position : $("#positioin").html(),
+                        position : $("#position").html(),
                         roomNumber : $("#roomNumber").html()
                     },
                     method : "POST",
@@ -207,7 +222,6 @@
                 $.ajax({
                     url : "../index.php?rt=game/call",
                     data : {
-                        player : this.id[1],
                         roomNumber : $("#roomNumber").html(),
                         position : $("#position").html()
                     },  
@@ -242,7 +256,7 @@
         }
 
         function disableHand(){
-            $(".hand").off("click");
+            $("#hand").off("click");
         }
 
         function start() {

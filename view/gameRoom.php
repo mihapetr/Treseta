@@ -63,8 +63,12 @@
     </style>
 </head>
 <body>
-    <img src="../images/din.jpg" class="image">
+    <div id="position" style="display : none;"><?php echo (int) $_SESSION["position"]; ?></div>
+    <img src="https://rp2.studenti.math.hr/~dinkmadu/projekt/Treseta/app/card_art/din.jpg" class="image">
     <div class="top">
+        <br><br>
+        Nalazite se u sobi broj <?php echo $_SESSION["roomNumber"]; ?>.
+        <br><br>
         Odaberite poziciju u kojoj želite igrati.
         Prvu igru miješa prvi igrač, to jest drugi igrač igra prvu kartu u prvoj ruci. Sljedeću igru miješa drugi igrač.
         <br><br>

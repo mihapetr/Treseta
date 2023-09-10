@@ -60,7 +60,7 @@
     <div class="top">
         TREŠETA
         <br><br><br>
-        <img src="../images/din.jpg" class="image">
+        <img src="https://rp2.studenti.math.hr/~dinkmadu/projekt/Treseta/app/card_art/din.jpg" class="image">
     </div>
     
     <div class="middle">

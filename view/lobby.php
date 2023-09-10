@@ -58,7 +58,7 @@
     </style>
 </head>
 <body>
-    <img src="../images/din.jpg" class="image">
+    <img src="https://rp2.studenti.math.hr/~dinkmadu/projekt/Treseta/app/card_art/din.jpg" class="image">
     <div class="top">
         Klikom na gumb odaberite sobu. Pored gumba je naznačeno koliko je igrača trenutno u sobi.
     </div>
