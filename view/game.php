@@ -60,8 +60,8 @@
             left: 50%;
             margin-right: -50%;
             transform: translate(-50%, -50%);
-            background-image: url("https://rp2.studenti.math.hr/~dinkmadu/projekt/Treseta/app/images/wood.jpg");
-            background-color: #36454F;
+            /* background-image: url("https://rp2.studenti.math.hr/~dinkmadu/projekt/Treseta/app/images/wood.jpg");
+            background-color: #36454F; */
             opacity: 0.9;
             width: 400px;
         }
@@ -76,7 +76,7 @@
             position : absolute;
             left : 50%;
             bottom : 5px;
-            background-color: #36454F;
+            /* background-color: #36454F; */
             width : 50vw;
             height : 200px;
             overflow : hidden;
@@ -151,10 +151,11 @@
                 method : "POST",
                 dataType : "json",  
                 success : function(resp){
-                    show(resp);
                     console.log("success_hand");
+                    show(resp);
                 }
             });
+            console.log("fdhjasklfhb");
         }
 
         function show(hand){
@@ -203,7 +204,7 @@
                             $(`#${card_id}>img`).css("filter", "grayscale(0%)");
                             return;
                         }
-                        place_card(resp);
+                        placeCard(resp);
                     }
                 });
             });
@@ -223,17 +224,30 @@
                 dataType: "json",
                 success : function(resp){
                     console.log(resp.msg);
-                    // treba jos
                 }
             });
 
-            $.ajax({
-                url: "../index.php?rt=game/waitOthers",
-                data: {},
-                method: "POST",
-                dataType: "json"
-            });
+            let player = $("#position").html();
 
+            let box = $(`#${resp.msg[1]}`);
+            box.remove();
+
+            $(`#t${resp.msg[0]}`).html("").append(box);
+
+            if(resp.msg[2] == "c") {
+                setTimeout(() => {
+                    // empty the pool
+                    $("td").html(``);
+                    if(resp.msg[4] == "s") {
+                        update_score();
+                        update_hands(); // new dealing, new hands
+                        $(".pile").html("");
+                    }
+                }, 1500);
+            }
+
+            disableHand();
+            waitTurn();
         }
 
         function updateScore(){
@@ -243,15 +257,13 @@
                     roomNumber : $("#roomNumber").html()
                 },
                 method : "POST",
-                dataType : "json",  
-                success : fillscore
+                dataType : "json",
+                success : function(resp){
+                    let posistion = $("#position").html();
+                    $("#us").html(resp[position % 2]);
+                    $("#them").html(resp[(position + 1) % 2]);
+                }
             });
-        }
-
-        function fillScore(resp){
-            $position = (int) $("#position").html();
-            $("#us").html(resp[$position % 2]);
-            $("#them").html(resp[($position + 1) % 2]);
         }
 
         function callable(){
@@ -276,17 +288,16 @@
             });
         }
 
-        function waitTurn(i){
+        function waitTurn(){
             $.ajax({
                 url : "../index.php?rt=game/await",
                 data : {
-                    position : i,
+                    position : $("#position").html(),
                     roomNumber : $("#roomNumber").html()
                 },
                 method : "POST",
                 dataType : "json",  
                 success : function(resp) {
-                    console.log(`enabled hand ${i}`);
                     clickable();
                 }  
             });
@@ -299,17 +310,28 @@
         function start() {
             update_hand();  // gets hand cards from server
             disableHand();  // makes hand not clickable
-            waitTurn($(`#position`).html());     // requests server to notify about their turn
+            waitTurn();     // requests server to notify about their turn
             
-            // $.ajax({
-            //     url: "../index.php?rt=game/waitOthers",
-            //     data: {
-            //         roomNumber : $("#roomNumber").html(),
-            //         position : $("#position").html()
-            //     },
-            //     method: "POST",
-            //     dataType: "json"
-            // });
+            // adds card to a player pool when someone plays a card
+            $.ajax({
+                url: "../index.php?rt=game/waitOthers",
+                data: {},
+                method: "POST",
+                dataType: "json",
+                success: function(resp){
+                    let position = $("#position").html();
+                    $("td").html("");
+                    let src = null;
+                    let box = null;
+                    for (let i = 0; i < 4; i++){
+                        let poolCard = resp.cards()[(position + i) % 4].img();
+                        src = `../app/card_art/${poolCard}`;
+                        box = $(`<div class='box' id="pool${i}"></div>`);
+                        box.append(`<img src="${src}" class="card">`);
+                        $(`#t${i}`).append(box);
+                    }
+                }
+            });
         }
 
         $(document).ready(function(){

@@ -28,11 +28,10 @@ class gameController {
         $hand = [];
         // $player = $table -> players()[$position]; // gets the Player from the table
         foreach ($table -> players() as $key => $player){
-            if ($player -> position == $position){
+            if ($player -> position() == $position){
                 foreach ($player -> hand() -> cards() as $key => $card){
                     $hand[] = $card -> img();
                 }
-                break;
             }
         }
         
@@ -67,7 +66,7 @@ class gameController {
         $table -> played($player, $card);
         $table -> endPhase();
         $table -> save($roomNumber);
-        $msg = $card;
+        $msg = $player . $card;
         if($table -> pool -> isEmpty()) {
             $msg .= "c";    // collect the pool on the client
             $msg .= $table -> pool -> lastWinner();    // who won the trick
@@ -150,7 +149,8 @@ class gameController {
 
     function getScores(){
         $table = Table::load((int) $_POST ["roomNumber"]);
-        echo json_encode($table -> scores());
+        $val = $table -> scores();
+        echo json_encode($val);
     }
 
     function invalidate(){

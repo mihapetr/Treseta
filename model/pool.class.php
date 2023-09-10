@@ -19,6 +19,10 @@ class Pool extends Collection implements JsonSerializable {
         $this -> empty = true;  // if all cards on the table are empty cards
     }
 
+    function cards(){
+        return $this -> cards;
+    }
+
     // encodes protected values
     public function jsonSerialize() {
 
