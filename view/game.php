@@ -82,7 +82,6 @@
     <div id="roomNumber" style="display : none;"><?php echo (int) $_SESSION["roomNumber"]; ?></div>
     <div class="playing_field">
         <div id="hand" class="hand"></div>
-        <button id="c" class = "call">CALL</button>
         <table id="pool" class = "center">
             <tr>
                 <td></td> <td id="<?php echo "t"; echo ((int) $_SESSION["position"] + 2) % 4; ?>" class = "table"></td> <td></td>
