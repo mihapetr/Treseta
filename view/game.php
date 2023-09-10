@@ -60,7 +60,7 @@
             left: 50%;
             margin-right: -50%;
             transform: translate(-50%, -50%);
-            background-image: url("../app/images/wood.jpg");
+            background-image: url("https://rp2.studenti.math.hr/~dinkmadu/projekt/Treseta/app/images/wood.jpg");
             background-color: #36454F;
             opacity: 0.9;
             width: 400px;
