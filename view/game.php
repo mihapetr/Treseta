@@ -87,11 +87,44 @@
             background-color : lightgreen;
             overflow : hidden;
         }
+        #score{
+            padding-right: 20px;
+            text-align: middle;
+            font-size: 26px;
+            position: absolute;
+            right: 0;
+            top: 5%;
+        }
+        #us{
+            border: 3px solid black;
+            height: 50px;
+        }
+        #them{
+            border: 3px solid black;
+            height: 50px;
+        }
+        #head{
+            border: 3px solid black;
+            height: 50px;
+        }
+        #score_table{
+            border-collapse: collapse;
+        }
     </style>
 </head>
 <body>
     <div id="position" style="display : none;"><?php echo (int) $_SESSION["position"]; ?></div>
     <div id="roomNumber" style="display : none;"><?php echo (int) $_SESSION["roomNumber"]; ?></div>
+    <div id="score">
+        <table id="score_table">
+            <tr>
+                <th id="head" colspan="2">Rezultat</th>
+            </tr>
+            <tr>
+                <td id="us"></td><td id="them"></td>
+            </tr>
+        </table>
+    </div>
     <div class="playing_field">
         <div id="hand" class="hand"></div><button id="c" class="call">AKUŽAJ</button>
         <table id="pool" class = "center">
@@ -211,10 +244,14 @@
                 },
                 method : "POST",
                 dataType : "json",  
-                success : function(resp) {
-                    console.log(resp);
-                }
+                success : fillscore
             });
+        }
+
+        function fillScore(resp){
+            $position = (int) $("#position").html();
+            $("#us").html(resp[$position % 2]);
+            $("#them").html(resp[($position + 1) % 2]);
         }
 
         function callable(){
