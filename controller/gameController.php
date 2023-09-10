@@ -121,22 +121,11 @@ class gameController {
         }
     }
 
-    function waitOthers(){
+    function returnPolls(){
         $roomNumber =(int) $_POST["roomNumber"];
         $position =(int) $_POST["position"];
-        while(1){
-            $table = Table::load($roomNumber);
-            if ($table -> updatedPool[$position] === true){
-                $table -> updatedPool[$position] === false;
-
-                $table -> save($roomNumber);
-
-                echo json_encode($table -> pool);
-            }
-                
-            usleep(100000);
-        }
-        
+        $table = Table::load($roomNumber);
+        echo json_encode($table -> pool);
     }
 
     function updatePool(){

@@ -150,12 +150,8 @@
                 },
                 method : "POST",
                 dataType : "json",  
-                success : function(resp){
-                    console.log("success_hand");
-                    show(resp);
-                }
+                success : show
             });
-            console.log("fdhjasklfhb");
         }
 
         function show(hand){
@@ -167,7 +163,6 @@
                 box.append(`<img src="${src}" class="card">`);
                 $(`#hand`).append(box);
             }
-            console.log("show");
         }
 
         function clickable(){
@@ -215,6 +210,9 @@
         }
 
         function placeCard(resp){
+            disableHand();
+
+            // tells other players that a card has been placed
             $.ajax({
                 url: "../index.php?rt=game/updatePool",
                 data: {
@@ -229,24 +227,26 @@
 
             let player = $("#position").html();
 
+            // get and remove card from the hand
             let box = $(`#${resp.msg[1]}`);
             box.remove();
 
+            // place the card on the pool
             $(`#t${resp.msg[0]}`).html("").append(box);
 
             if(resp.msg[2] == "c") {
                 setTimeout(() => {
                     // empty the pool
-                    $("td").html(``);
+                    for (let i = 0; i < 4; i++){
+                        $(`#t${i}`).html("");
+                    }
                     if(resp.msg[4] == "s") {
                         update_score();
                         update_hands(); // new dealing, new hands
-                        $(".pile").html("");
                     }
                 }, 1500);
             }
 
-            disableHand();
             waitTurn();
         }
 
@@ -288,6 +288,36 @@
             });
         }
 
+        function showPoll(){
+            // first empty
+            for (let i = 0; i < 4; i++){
+                $(`#t${i}`).html("");
+            }
+
+            // draws a poll
+            $.ajax({
+                url: "../index.php?rt=game/returnPolls",
+                data: {
+                    roomNumber : $("#roomNumber").html()
+                },
+                method: "POST",
+                dataType: "json",
+                success: function(resp){
+                    let position = $("#position").html();
+                    let src = null;
+                    let box = null;
+                    for (let i = 0; i < 4; i++){
+                        let poolCard = resp.cards()[(position + i) % 4].img();
+                        src = `../app/card_art/${poolCard}`;
+                        box = $(`<div class="box" id="pool${i}"></div>`);
+                        box.append(`<img src="${src}" class="card">`);
+                        $(`#t${i}`).append(box);
+                    }
+                }
+            });
+        }
+
+        // wait until its your turn
         function waitTurn(){
             $.ajax({
                 url : "../index.php?rt=game/await",
@@ -298,6 +328,7 @@
                 method : "POST",
                 dataType : "json",  
                 success : function(resp) {
+                    showPoll();
                     clickable();
                 }  
             });
@@ -311,27 +342,6 @@
             update_hand();  // gets hand cards from server
             disableHand();  // makes hand not clickable
             waitTurn();     // requests server to notify about their turn
-            
-            // adds card to a player pool when someone plays a card
-            $.ajax({
-                url: "../index.php?rt=game/waitOthers",
-                data: {},
-                method: "POST",
-                dataType: "json",
-                success: function(resp){
-                    let position = $("#position").html();
-                    $("td").html("");
-                    let src = null;
-                    let box = null;
-                    for (let i = 0; i < 4; i++){
-                        let poolCard = resp.cards()[(position + i) % 4].img();
-                        src = `../app/card_art/${poolCard}`;
-                        box = $(`<div class='box' id="pool${i}"></div>`);
-                        box.append(`<img src="${src}" class="card">`);
-                        $(`#t${i}`).append(box);
-                    }
-                }
-            });
         }
 
         $(document).ready(function(){
