@@ -100,6 +100,12 @@ class gameController {
         $roomNumber = $_POST["roomNumber"];
 
         while(true) {
+            $table = Table::load($roomNumber);
+            if ($table -> checkWin() != -1){
+                // there is a winner
+                echo json_encode(new Message($table -> checkWin(), "winner"));
+                break;
+            }
             if (isset($who)) $whoPrev = $who;
             else $whoPrev = null;
             $res = $db -> prepare("
@@ -114,7 +120,8 @@ class gameController {
 
             // request matches the database state
             if($player == $who) {
-                echo json_encode(new Message(null, null));
+                if (count($table -> players()[$player] -> hand() -> cards()) == 0) echo json_encode(new Message(null, 1));
+                else echo json_encode(new Message(null, 2));
                 break;
             }
             usleep(100000);
@@ -122,24 +129,21 @@ class gameController {
     }
 
     function returnPolls(){
-        $roomNumber =(int) $_POST["roomNumber"];
-        $position =(int) $_POST["position"];
+        $roomNumber = (int) $_POST["roomNumber"];
+        $position = (int) $_POST["position"];
         $table = Table::load($roomNumber);
-        echo json_encode($table -> pool);
-    }
-
-    function updatePool(){
-        $roomNumber =(int) $_POST["roomNumber"];
-        $table = Table::load($roomNumber);
-        $table -> updatedPool = [true, true, true, true];
-
-        $table -> save($roomNumber);
+        $polls = [];
+        for ($i = 0; $i < 4; $i++){
+            $polls[] = $table -> poll -> cards()[($i + $position) % 4] -> img();
+        }
+        echo json_encode(new Message(null, $polls));
     }
 
     function getScores(){
-        $table = Table::load((int) $_POST ["roomNumber"]);
+        $roomNumber = (int) $_POST["roomNumber"];
+        $table = Table::load($roomNumber);
         $val = $table -> scores();
-        echo json_encode($val);
+        echo json_encode(new Message(null,$val));
     }
 
     function invalidate(){
@@ -149,7 +153,6 @@ class gameController {
         $table -> save($roomNumber);
         session_unset();
         session_destroy();
-        exit(0);
     }
 };
 

@@ -110,11 +110,19 @@
         #score_table{
             border-collapse: collapse;
         }
+        #turn{
+            position: absolute;
+            top: 20px;
+            right: 50%;
+            text-align: middle;
+            font-size: 50px;
+        }
     </style>
 </head>
 <body>
     <div id="position" style="display : none;"><?php echo (int) $_SESSION["position"]; ?></div>
     <div id="roomNumber" style="display : none;"><?php echo (int) $_SESSION["roomNumber"]; ?></div>
+    <div id="turn"></div>
     <div id="score">
         <table id="score_table">
             <tr>
@@ -157,15 +165,17 @@
         function show(hand){
             let src = null;
             let box = null;
+
             for (let i = 0; i < hand.length; i++){
                 src = `../app/card_art/${hand[i]}`;
                 box = $(`<div class='box' id = "${i}"></div>`);
                 box.append(`<img src="${src}" class="card">`);
-                $(`#hand`).append(box);
+                $("#hand").append(box);
             }
         }
 
         function clickable(){
+            updateScore();
             card_id = null;
 
             $("#hand").on("click", ".box", function() {
@@ -212,21 +222,6 @@
         function placeCard(resp){
             disableHand();
 
-            // tells other players that a card has been placed
-            $.ajax({
-                url: "../index.php?rt=game/updatePool",
-                data: {
-                    roomNumber : $("#roomNumber").html()
-                },
-                method: "POST",
-                dataType: "json",
-                success : function(resp){
-                    console.log(resp.msg);
-                }
-            });
-
-            let player = $("#position").html();
-
             // get and remove card from the hand
             let box = $(`#${resp.msg[1]}`);
             box.remove();
@@ -241,12 +236,11 @@
                         $(`#t${i}`).html("");
                     }
                     if(resp.msg[4] == "s") {
-                        update_score();
-                        update_hands(); // new dealing, new hands
+                        updateScore();
                     }
                 }, 1500);
             }
-
+            $("#turn").html("");
             waitTurn();
         }
 
@@ -259,15 +253,18 @@
                 method : "POST",
                 dataType : "json",
                 success : function(resp){
-                    let posistion = $("#position").html();
-                    $("#us").html(resp[position % 2]);
-                    $("#them").html(resp[(position + 1) % 2]);
+                    console.log("score updated"); // not working
+                    let scorePoints = resp.msg;
+                    let position = $("#position").html();
+                    $("#us").html("").append(scorePoints[position % 2]);
+                    $("#them").html("").append(scorePoints[(position + 1) % 2]);
                 }
             });
         }
 
         function callable(){
-            $(".call").on("click", function(){
+            $("#c").css("background-image: linear-gradient(-180deg, #013220, #320113);");
+            $("#c").on("click", function(){
                 $.ajax({
                     url : "../index.php?rt=game/call",
                     data : {
@@ -283,9 +280,12 @@
                         }
                         $(`img`).css("filter", "grayscale(0%)");
                         console.log(`call: ${resp.object}`);
+                        $("#c").css("disabled", "true");
+                        $("#c").css("background-image", "linear-gradient(-180deg, #B2BEB5, #36454F);");
                     }  
                 });
             });
+
         }
 
         function showPoll(){
@@ -293,25 +293,31 @@
             for (let i = 0; i < 4; i++){
                 $(`#t${i}`).html("");
             }
-
             // draws a poll
             $.ajax({
                 url: "../index.php?rt=game/returnPolls",
                 data: {
-                    roomNumber : $("#roomNumber").html()
+                    roomNumber : $("#roomNumber").html(),
+                    position: $("#position").html()
                 },
                 method: "POST",
                 dataType: "json",
                 success: function(resp){
-                    let position = $("#position").html();
+                    console.log(resp.msg);
+                    // list of poll cards is in resp.msg (ie resp.msg[1]="b1.jpg")
                     let src = null;
                     let box = null;
                     for (let i = 0; i < 4; i++){
-                        let poolCard = resp.cards()[(position + i) % 4].img();
-                        src = `../app/card_art/${poolCard}`;
-                        box = $(`<div class="box" id="pool${i}"></div>`);
-                        box.append(`<img src="${src}" class="card">`);
-                        $(`#t${i}`).append(box);
+                        let pollCard = resp.msg[i];
+
+                        // check if there is a card on the table
+                        if (pollCard != ".jpg"){
+                            src = `../app/card_art/${poolCard}`;
+                            box = $(`<div class="box" id="pool${i}"></div>`);
+                            box.append(`<img src="${src}" class="card">`);
+                            $(`#t${i}`).html(box);
+                        }
+                        
                     }
                 }
             });
@@ -319,6 +325,7 @@
 
         // wait until its your turn
         function waitTurn(){
+            // await also check the win
             $.ajax({
                 url : "../index.php?rt=game/await",
                 data : {
@@ -328,8 +335,34 @@
                 method : "POST",
                 dataType : "json",  
                 success : function(resp) {
+                    if (resp.msg == "winner"){
+                        let position = $("#position").html();
+                        let winner = resp.object;
+                        let didWe = (position + winner) % 2;
+                        if (didWe == 0) alert("Čestitam, pobjedili ste!");
+                        else alert("Izgubili ste. Više sreće drugi put.");
+                        //erase the session
+                        $.ajax({
+                            url : "../index.php?rt=game/invalidate",
+                            data : {
+                                roomNumber : $("#roomNumber").html()
+                            },
+                            method : "POST",
+                            dataType : "json"
+                        });
+                        window.location.href = "../index.php";
+                        exit();
+                    }
+                    // resp.msg is 1 when hand is empty, 2 otherwise
+                    // this updates the hand only when the new starts
+                    if (resp.msg == 1){
+                        console.log("update");
+                        update_hand();
+                    }
                     showPoll();
+                    $("#turn").html("Vaš je potez!");
                     clickable();
+                    
                 }  
             });
         }

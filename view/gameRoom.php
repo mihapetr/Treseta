@@ -9,6 +9,7 @@
     <style>
         .top{
             position: absolute;
+            padding-top: 50px;
             top: 30%;
             left: 50%;
             -webkit-transform: translate(-50%, -50%);
@@ -159,6 +160,11 @@
         </div>
         <br><br>
         Nakon što ste odabrali poziciju, pričekajte da se sva mjesta popune.
+        <br><br>
+        Nakon što uđete u igru i kada dođete na potez, prvo se nalazite u fazi akužavanja.
+        Kada odaberete karte i kliknete na gumb "Akužaj" ili samo kliknete na gumb (ako nemate ništa),
+        dolazite u fazu igranja. Tada birate kartu koju želite igrati uz poštivanje pravila te,
+        nakon što ste odigrali kartu, čekate na svoj potez.
     </div>
 </body>
 </html>

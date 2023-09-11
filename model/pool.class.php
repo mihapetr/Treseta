@@ -9,6 +9,7 @@ class Pool extends Collection implements JsonSerializable {
     protected $first;       // position of the first card (player)
     protected $empty;
     protected $winner;
+    protected $cards;
 
     // intitialize an empty collection
     function __construct() {

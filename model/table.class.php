@@ -18,7 +18,7 @@ class Table implements JsonSerializable {
     public $pool;        // a Pool object   
     protected $who;         // whose turn it is to play 
     protected $valid;       // tracks if a player leaves the game
-    public $updatedPool; // change to be a list of bools
+    protected $winner;
 
     public static function getPhases() {
 
@@ -44,13 +44,13 @@ class Table implements JsonSerializable {
     function __construct() {
 
         $this -> players = [];
-        $this -> scores = [];
+        $this -> scores = [0,0];
         $this -> pool = new Pool();
         $this -> valid = true;
         $this -> phase = -1;    // represents the seating phase
         // if a phase is ended after all players are seated, cards will be dealt
         $this -> who = -1; // doesn't matter
-        $updatedPool = [false, false, false, false];
+        $this -> winner = -1;
     }
 
     // encodes protected values
@@ -73,6 +73,34 @@ class Table implements JsonSerializable {
             throw new Exception("Seat taken", 1);
         
         else $this -> players[$player -> position()] = $player;     
+    }
+
+    function checkWin(){
+        if ($this -> scores()[0] >= 40 && $this -> scores()[1] >= 40){
+            if ($this -> scores()[0] > $this -> scores()[1]){
+                $this -> winner = 0;
+                return 0;
+            }
+            else if ($this -> scores()[0] < $this -> scores()[1]){
+                $this -> winner = 1;
+                return 1;
+            }
+            else return -1;
+        }
+        else if ($this -> scores()[0] >= 40){
+            $this -> winner = 0;
+            return 0;
+        }
+        else if ($this -> scores()[1] >= 40){
+            $this -> winner = 1;
+            return 1;
+        }
+        else return -1;
+    }
+
+    // getter for winner
+    function winner(){
+        return $this -> winner;
     }
 
     // getter for players
@@ -225,7 +253,8 @@ class Table implements JsonSerializable {
             }
         }
 
-        $this -> scores[] = [$evens, $odds];
+        $this -> scores[0] += $evens;
+        $this -> scores[1] += $odds;
     }
 
     // getter
@@ -235,7 +264,6 @@ class Table implements JsonSerializable {
     }
 
     // saves the Table object to the database;
-    // for now there is only one row with id = 1
     function save($game_number) {
 
         $db = DB::getConnection();

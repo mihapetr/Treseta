@@ -68,6 +68,8 @@
             Dobrodošli na web stranicu za igranje trešete online.
             <br>
             Za nastavak upišite korisničko ime.
+            <br>
+            Korisničko ime se mora sastojati od 3-20 slova.
             <br><br>
             <input type="text" name="username" class="size">
             <button type="submit" class="btn">Ulogiraj se</button>
