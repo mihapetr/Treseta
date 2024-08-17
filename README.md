@@ -1,3 +1,9 @@
+# Treseta
+
+This was a web app project. It was never finished due to collaboration misunderstanding. There is some [documentation](Treseta.pdf). The project showcases the MVC paradigm and has a developed backend with some unofficial tests. The only missing component is a working frontend.
+
+# OLD WIP COMMENTS:
+
 # Generalno
 * koristimo engleski za nazivlje unutar koda
 * puno komentara bi bilo lijepo
